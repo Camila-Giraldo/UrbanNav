@@ -39,6 +39,15 @@ export class RoleMenu extends Entity {
   })
   list: boolean;
 
+  @property({
+    type: 'string',
+  })
+  roleId?: string;
+
+  @property({
+    type: 'string',
+  })
+  menuId?: string;
 
   constructor(data?: Partial<RoleMenu>) {
     super(data);
