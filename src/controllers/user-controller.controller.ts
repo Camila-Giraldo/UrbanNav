@@ -19,11 +19,15 @@ import {
 } from '@loopback/rest';
 import {User} from '../models';
 import {UserRepository} from '../repositories';
+import { SegurityUserService } from '../services';
+import { service } from '@loopback/core';
 
 export class UserControllerController {
   constructor(
     @repository(UserRepository)
     public userRepository : UserRepository,
+    @service(SegurityUserService)
+    public servicioSeguridad:SegurityUserService
   ) {}
 
   @post('/user')
@@ -44,6 +48,10 @@ export class UserControllerController {
     })
     user: Omit<User, '_id'>,
   ): Promise<User> {
+    let clave=this.servicioSeguridad.crearClave();
+    let claveCifrada=this.servicioSeguridad.cifrarTexto(clave);
+    user.password=claveCifrada;
+    //Send Email
     return this.userRepository.create(user);
   }
 
@@ -55,6 +63,8 @@ export class UserControllerController {
   async count(
     @param.where(User) where?: Where<User>,
   ): Promise<Count> {
+  
+
     return this.userRepository.count(where);
   }
 
