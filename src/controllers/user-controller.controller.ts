@@ -1,3 +1,4 @@
+import {service} from '@loopback/core';
 import {
   Count,
   CountSchema,
@@ -7,27 +8,26 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
-import {User} from '../models';
+import {Credentials, User} from '../models';
 import {UserRepository} from '../repositories';
-import { SegurityUserService } from '../services';
-import { service } from '@loopback/core';
+import {SegurityUserService} from '../services';
 
 export class UserControllerController {
   constructor(
     @repository(UserRepository)
-    public userRepository : UserRepository,
+    public userRepository: UserRepository,
     @service(SegurityUserService)
-    public servicioSeguridad:SegurityUserService
+    public servicioSeguridad: SegurityUserService,
   ) {}
 
   @post('/user')
@@ -48,9 +48,9 @@ export class UserControllerController {
     })
     user: Omit<User, '_id'>,
   ): Promise<User> {
-    let clave=this.servicioSeguridad.crearClave();
-    let claveCifrada=this.servicioSeguridad.cifrarTexto(clave);
-    user.password=claveCifrada;
+    let clave = this.servicioSeguridad.createRandomText(10);
+    let claveCifrada = this.servicioSeguridad.cifrarTexto(clave);
+    user.password = claveCifrada;
     //Send Email
     return this.userRepository.create(user);
   }
@@ -60,11 +60,7 @@ export class UserControllerController {
     description: 'User model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(User) where?: Where<User>,
-  ): Promise<Count> {
-  
-
+  async count(@param.where(User) where?: Where<User>): Promise<Count> {
     return this.userRepository.count(where);
   }
 
@@ -80,9 +76,7 @@ export class UserControllerController {
       },
     },
   })
-  async find(
-    @param.filter(User) filter?: Filter<User>,
-  ): Promise<User[]> {
+  async find(@param.filter(User) filter?: Filter<User>): Promise<User[]> {
     return this.userRepository.find(filter);
   }
 
@@ -116,7 +110,7 @@ export class UserControllerController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(User, {exclude: 'where'}) filter?: FilterExcludingWhere<User>
+    @param.filter(User, {exclude: 'where'}) filter?: FilterExcludingWhere<User>,
   ): Promise<User> {
     return this.userRepository.findById(id, filter);
   }
@@ -156,5 +150,29 @@ export class UserControllerController {
   })
   async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.userRepository.deleteById(id);
+  }
+
+  /**
+   * Métodos personalizados para la Api
+   */
+
+  @post('/identificar-usuario')
+  @response(200, {
+    description: 'Identificar un usuario por correo y clave',
+    content: {'application/json': {schema: getModelSchemaRef(Credentials)}},
+  })
+  async identifyuser(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(Credentials),
+        },
+      },
+    })
+    credentials: Credentials,
+  ) {
+    let user = await this.servicioSeguridad.identificarUsuario(credentials);
+    if (user) {
+    }
   }
 }
