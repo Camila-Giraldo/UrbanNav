@@ -11,6 +11,7 @@ import {
   del,
   get,
   getModelSchemaRef,
+  HttpErrors,
   param,
   patch,
   post,
@@ -18,8 +19,8 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import {Credentials, User} from '../models';
-import {UserRepository} from '../repositories';
+import {AuthenticationFactor, Credentials, Login, User} from '../models';
+import {LoginRepository, UserRepository} from '../repositories';
 import {SegurityUserService} from '../services';
 
 export class UserControllerController {
@@ -28,6 +29,8 @@ export class UserControllerController {
     public userRepository: UserRepository,
     @service(SegurityUserService)
     public servicioSeguridad: SegurityUserService,
+    @repository(LoginRepository)
+    public repositoryLogin: LoginRepository,
   ) {}
 
   @post('/user')
@@ -159,7 +162,7 @@ export class UserControllerController {
   @post('/identificar-usuario')
   @response(200, {
     description: 'Identificar un usuario por correo y clave',
-    content: {'application/json': {schema: getModelSchemaRef(Credentials)}},
+    content: {'application/json': {schema: getModelSchemaRef(User)}},
   })
   async identifyuser(
     @requestBody({
@@ -170,9 +173,48 @@ export class UserControllerController {
       },
     })
     credentials: Credentials,
-  ) {
-    let user = await this.servicioSeguridad.identificarUsuario(credentials);
+  ): Promise<object> {
+    let user = await this.servicioSeguridad.identifyUser(credentials);
     if (user) {
+      let code2fa = this.servicioSeguridad.createRandomText(5);
+      let login: Login = new Login();
+      login.userId = user._id!;
+      login.code2Fa = code2fa;
+      login.codeStatus = false;
+      login.token = '';
+      login.tokenStatus = false;
+      this.repositoryLogin.create(login);
+      //notificar por correo o sms
+      return user;
     }
+    return new HttpErrors[401]('Las credenciales no son correctas');
+  }
+
+  @post('/verificar-2fa')
+  @response(200, {
+    description: 'Validar un código de 2FA',
+  })
+  async verifyCode2fa(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(AuthenticationFactor),
+        },
+      },
+    })
+    credentials: AuthenticationFactor,
+  ): Promise<object> {
+    let user = await this.servicioSeguridad.verifyCode2fa(credentials);
+    if (user) {
+      let token = this.servicioSeguridad.createToken(user);
+      if (user) {
+        user.password = '';
+        return {
+          user: user,
+          token: token,
+        };
+      }
+    }
+    return new HttpErrors[401]('Código 2FA no válido');
   }
 }
