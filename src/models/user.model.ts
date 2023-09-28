@@ -1,6 +1,12 @@
-import {Entity, model, property, belongsTo, hasMany} from '@loopback/repository';
-import {Role} from './role.model';
+import {
+  Entity,
+  belongsTo,
+  hasMany,
+  model,
+  property,
+} from '@loopback/repository';
 import {Login} from './login.model';
+import {Role} from './role.model';
 
 @model()
 export class User extends Entity {
@@ -47,7 +53,6 @@ export class User extends Entity {
 
   @property({
     type: 'string',
-    
   })
   password?: string;
 
