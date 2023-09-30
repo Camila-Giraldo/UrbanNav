@@ -10,3 +10,4 @@ export * from './login-controller.controller';
 export * from './role-controller.controller';
 export * from './menu-controller.controller';
 export * from './role-menu-controller.controller';
+export * from './permissions.controller';

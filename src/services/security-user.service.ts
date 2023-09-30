@@ -90,4 +90,14 @@ export class SecurityUserService {
     let token = jwt.sign(data, SecuritySpecs.keyJWT);
     return token;
   }
+  /**
+   * Valida y obtiene el rol de un token
+   * @param tk el token
+   * @returns el _id del rol
+   */
+  getRolFromToken(tk:string): string {
+    let obj=jwt.verify(tk, SecuritySpecs.keyJWT);
+    return obj.role;
+
+  }
 }

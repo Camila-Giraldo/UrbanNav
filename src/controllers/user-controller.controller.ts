@@ -23,6 +23,7 @@ import {
 import {AuthenticationFactor, Credentials, Login, User} from '../models';
 import {LoginRepository, UserRepository} from '../repositories';
 import {SecurityUserService} from '../services';
+import {SecuritySpecs} from '../config/security.config';
 
 export class UserControllerController {
   constructor(
@@ -68,7 +69,10 @@ export class UserControllerController {
     return this.userRepository.count(where);
   }
 
-  @authenticate('auth')
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuUserId,SecuritySpecs.listAction]
+}
+)
   @get('/user')
   @response(200, {
     description: 'Array of User model instances',
