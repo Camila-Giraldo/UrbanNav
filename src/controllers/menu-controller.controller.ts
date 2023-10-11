@@ -19,6 +19,7 @@ import {
 } from '@loopback/rest';
 import {Menu} from '../models';
 import {MenuRepository} from '../repositories';
+import {authenticate} from '@loopback/authentication';
 
 export class MenuControllerController {
   constructor(

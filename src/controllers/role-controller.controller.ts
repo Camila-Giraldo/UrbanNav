@@ -19,6 +19,8 @@ import {
 } from '@loopback/rest';
 import {Role} from '../models';
 import {RoleRepository} from '../repositories';
+import {SecuritySpecs} from '../config/security.config';
+import {authenticate} from '@loopback/authentication';
 
 export class RoleControllerController {
   constructor(
@@ -47,6 +49,13 @@ export class RoleControllerController {
     return this.roleRepository.create(role);
   }
 
+
+@authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuRolId,SecuritySpecs.listAction]
+}
+)
+
+
   @get('/role/count')
   @response(200, {
     description: 'Role model count',
@@ -57,6 +66,12 @@ export class RoleControllerController {
   ): Promise<Count> {
     return this.roleRepository.count(where);
   }
+
+
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuRolId,SecuritySpecs.listAction]
+}
+)
 
   @get('/role')
   @response(200, {
@@ -75,6 +90,12 @@ export class RoleControllerController {
   ): Promise<Role[]> {
     return this.roleRepository.find(filter);
   }
+
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuRolId,SecuritySpecs.editAction]
+}
+)
+
 
   @patch('/role')
   @response(200, {
@@ -95,6 +116,13 @@ export class RoleControllerController {
     return this.roleRepository.updateAll(role, where);
   }
 
+
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuRolId,SecuritySpecs.listAction]
+}
+)
+
+
   @get('/role/{id}')
   @response(200, {
     description: 'Role model instance',
@@ -110,6 +138,12 @@ export class RoleControllerController {
   ): Promise<Role> {
     return this.roleRepository.findById(id, filter);
   }
+
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuRolId,SecuritySpecs.editAction]
+}
+)
+
 
   @patch('/role/{id}')
   @response(204, {
@@ -141,8 +175,12 @@ export class RoleControllerController {
   }
 
 
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuRolId,SecuritySpecs.eliminateAction]
+}
+)
 
- 
+
 
 
   @del('/role/{id}')

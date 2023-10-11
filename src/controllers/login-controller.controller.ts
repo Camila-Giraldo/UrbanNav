@@ -51,6 +51,12 @@ export class LoginControllerController {
     return this.loginRepository.create(login);
   }
 
+
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuLoginId,SecuritySpecs.listAction]
+}
+)
+
   @get('/login/count')
   @response(200, {
     description: 'Login model count',
@@ -112,7 +118,10 @@ export class LoginControllerController {
   }
 
 
-
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuLoginId,SecuritySpecs.listAction]
+}
+)
 
   @get('/login/{id}')
   @response(200, {
@@ -130,6 +139,10 @@ export class LoginControllerController {
     return this.loginRepository.findById(id, filter);
   }
 
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuLoginId,SecuritySpecs.editAction]
+}
+)
 
 
   @patch('/login/{id}')
@@ -149,6 +162,11 @@ export class LoginControllerController {
   ): Promise<void> {
     await this.loginRepository.updateById(id, login);
   }
+
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuLoginId,SecuritySpecs.editAction]
+}
+)
 
   @put('/login/{id}')
   @response(204, {

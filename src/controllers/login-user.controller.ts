@@ -11,6 +11,8 @@ import {
   User,
 } from '../models';
 import {LoginRepository} from '../repositories';
+import {SecuritySpecs} from '../config/security.config';
+import {authenticate} from '@loopback/authentication';
 
 export class LoginUserController {
   constructor(
@@ -18,6 +20,11 @@ export class LoginUserController {
     public loginRepository: LoginRepository,
   ) { }
 
+
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuLoginId,SecuritySpecs.listAction]
+}
+)
   @get('/logins/{id}/user', {
     responses: {
       '200': {
