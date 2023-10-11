@@ -19,6 +19,8 @@ import {
 } from '@loopback/rest';
 import {RoleMenu} from '../models';
 import {RoleMenuRepository} from '../repositories';
+import {authenticate} from '@loopback/authentication';
+import {SecuritySpecs} from '../config/security.config';
 
 export class RoleMenuControllerController {
   constructor(
@@ -47,6 +49,13 @@ export class RoleMenuControllerController {
     return this.roleMenuRepository.create(roleMenu);
   }
 
+
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuMenuRoleId,SecuritySpecs.listAction]
+}
+)
+
+
   @get('/role-menu/count')
   @response(200, {
     description: 'RoleMenu model count',
@@ -57,6 +66,12 @@ export class RoleMenuControllerController {
   ): Promise<Count> {
     return this.roleMenuRepository.count(where);
   }
+
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuMenuRoleId,SecuritySpecs.listAction]
+}
+)
+
 
   @get('/role-menu')
   @response(200, {
@@ -76,6 +91,12 @@ export class RoleMenuControllerController {
     return this.roleMenuRepository.find(filter);
   }
 
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuMenuRoleId,SecuritySpecs.editAction]
+}
+)
+
+
   @patch('/role-menu')
   @response(200, {
     description: 'RoleMenu PATCH success count',
@@ -94,6 +115,12 @@ export class RoleMenuControllerController {
   ): Promise<Count> {
     return this.roleMenuRepository.updateAll(roleMenu, where);
   }
+
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuMenuRoleId,SecuritySpecs.listAction]
+}
+)
+
 
   @get('/role-menu/{id}')
   @response(200, {
@@ -139,6 +166,12 @@ export class RoleMenuControllerController {
   ): Promise<void> {
     await this.roleMenuRepository.replaceById(id, roleMenu);
   }
+
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuMenuRoleId,SecuritySpecs.eliminateAction]
+}
+)
+
 
   @del('/role-menu/{id}')
   @response(204, {
