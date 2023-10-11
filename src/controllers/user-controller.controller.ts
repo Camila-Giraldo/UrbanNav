@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable prefer-const */
 import {authenticate} from '@loopback/authentication';
 import {service} from '@loopback/core';
 import {

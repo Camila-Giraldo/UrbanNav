@@ -1,6 +1,6 @@
 export namespace SecuritySpecs {
   export const keyJWT: string = "mySecretKey"
-  export const menuUserId="63d04fcd013402040c040968";
+  export const menuUserId="652675f134935694269bc95f";
   export const listAction="list";
   export const saveAction="save";
   export const editAction="edit";
