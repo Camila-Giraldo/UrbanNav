@@ -62,6 +62,12 @@ export class UserControllerController {
     return this.userRepository.create(user);
   }
 
+@authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuUserId,SecuritySpecs.listAction]
+}
+)
+
+
   @get('/user/count')
   @response(200, {
     description: 'User model count',
@@ -71,7 +77,7 @@ export class UserControllerController {
     return this.userRepository.count(where);
   }
 
-  @authenticate({strategy:'auth',
+@authenticate({strategy:'auth',
   options:[SecuritySpecs.menuUserId,SecuritySpecs.listAction]
 }
 )
@@ -90,6 +96,12 @@ export class UserControllerController {
   async find(@param.filter(User) filter?: Filter<User>): Promise<User[]> {
     return this.userRepository.find(filter);
   }
+
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuUserId,SecuritySpecs.editAction]
+}
+)
+
 
   @patch('/user')
   @response(200, {
@@ -110,6 +122,13 @@ export class UserControllerController {
     return this.userRepository.updateAll(user, where);
   }
 
+
+
+@authenticate({strategy:'auth',
+options:[SecuritySpecs.menuUserId,SecuritySpecs.listAction]
+}
+)
+
   @get('/user/{id}')
   @response(200, {
     description: 'User model instance',
@@ -125,6 +144,14 @@ export class UserControllerController {
   ): Promise<User> {
     return this.userRepository.findById(id, filter);
   }
+
+
+
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuUserId,SecuritySpecs.editAction]
+  }
+  )
+
 
   @patch('/user/{id}')
   @response(204, {
@@ -154,6 +181,14 @@ export class UserControllerController {
   ): Promise<void> {
     await this.userRepository.replaceById(id, user);
   }
+
+
+
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuUserId,SecuritySpecs.eliminateAction]
+}
+)
+
 
   @del('/user/{id}')
   @response(204, {

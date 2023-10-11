@@ -140,6 +140,11 @@ export class RoleControllerController {
     await this.roleRepository.replaceById(id, role);
   }
 
+
+
+ 
+
+
   @del('/role/{id}')
   @response(204, {
     description: 'Role DELETE success',
