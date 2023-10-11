@@ -17,15 +17,23 @@ import {
 } from '@loopback/rest';
 import {
 Role,
-RoleMenu,
 Menu,
 } from '../models';
 import {RoleRepository} from '../repositories';
+import {SecuritySpecs} from '../config/security.config';
+import {authenticate} from '@loopback/authentication';
 
 export class RoleMenuController {
   constructor(
     @repository(RoleRepository) protected roleRepository: RoleRepository,
   ) { }
+
+
+
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuMenuRoleId,SecuritySpecs.listAction]
+}
+)
 
   @get('/roles/{id}/menus', {
     responses: {
@@ -70,6 +78,12 @@ export class RoleMenuController {
     return this.roleRepository.menus(id).create(menu);
   }
 
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuMenuRoleId,SecuritySpecs.editAction]
+}
+)
+
+
   @patch('/roles/{id}/menus', {
     responses: {
       '200': {
@@ -92,6 +106,12 @@ export class RoleMenuController {
   ): Promise<Count> {
     return this.roleRepository.menus(id).patch(menu, where);
   }
+
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuMenuRoleId,SecuritySpecs.eliminateAction]
+}
+)
+
 
   @del('/roles/{id}/menus', {
     responses: {

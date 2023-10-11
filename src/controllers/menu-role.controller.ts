@@ -21,6 +21,9 @@ RoleMenu,
 Role,
 } from '../models';
 import {MenuRepository} from '../repositories';
+import {authenticate} from '@loopback/authentication';
+
+ 
 
 export class MenuRoleController {
   constructor(

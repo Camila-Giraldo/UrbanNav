@@ -19,12 +19,16 @@ import {
 } from '@loopback/rest';
 import {Menu} from '../models';
 import {MenuRepository} from '../repositories';
+import {authenticate} from '@loopback/authentication';
+import {SecuritySpecs} from '../config/security.config';
 
 export class MenuControllerController {
   constructor(
     @repository(MenuRepository)
     public menuRepository : MenuRepository,
   ) {}
+
+
 
   @post('/menu')
   @response(200, {
@@ -47,6 +51,12 @@ export class MenuControllerController {
     return this.menuRepository.create(menu);
   }
 
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuMenuId,SecuritySpecs.listAction]
+}
+)
+
+
   @get('/menu/count')
   @response(200, {
     description: 'Menu model count',
@@ -57,6 +67,11 @@ export class MenuControllerController {
   ): Promise<Count> {
     return this.menuRepository.count(where);
   }
+
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuMenuId,SecuritySpecs.listAction]
+}
+)
 
   @get('/menu')
   @response(200, {
@@ -76,6 +91,11 @@ export class MenuControllerController {
     return this.menuRepository.find(filter);
   }
 
+
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuMenuId,SecuritySpecs.editAction]
+}
+)
   @patch('/menu')
   @response(200, {
     description: 'Menu PATCH success count',
@@ -95,6 +115,12 @@ export class MenuControllerController {
     return this.menuRepository.updateAll(menu, where);
   }
 
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuMenuId,SecuritySpecs.listAction]
+}
+)
+
+
   @get('/menu/{id}')
   @response(200, {
     description: 'Menu model instance',
@@ -111,6 +137,11 @@ export class MenuControllerController {
     return this.menuRepository.findById(id, filter);
   }
 
+
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuMenuId,SecuritySpecs.editAction]
+}
+)
   @patch('/menu/{id}')
   @response(204, {
     description: 'Menu PATCH success',
@@ -139,6 +170,11 @@ export class MenuControllerController {
   ): Promise<void> {
     await this.menuRepository.replaceById(id, menu);
   }
+
+  @authenticate({strategy:'auth',
+  options:[SecuritySpecs.menuMenuId,SecuritySpecs.eliminateAction]
+}
+)
 
   @del('/menu/{id}')
   @response(204, {

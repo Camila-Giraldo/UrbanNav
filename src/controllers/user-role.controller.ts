@@ -18,6 +18,8 @@ export class UserRoleController {
     public userRepository: UserRepository,
   ) { }
 
+
+  
   @get('/users/{id}/role', {
     responses: {
       '200': {
