@@ -5,7 +5,7 @@ import {
   repository,
   Where,
 } from '@loopback/repository';
-  import {
+import {
   del,
   get,
   getModelSchemaRef,
@@ -15,10 +15,7 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {
-Role,
-Menu,
-} from '../models';
+import {Role, Menu} from '../models';
 import {RoleRepository} from '../repositories';
 import {SecuritySpecs} from '../config/security.config';
 import {authenticate} from '@loopback/authentication';
@@ -26,15 +23,12 @@ import {authenticate} from '@loopback/authentication';
 export class RoleMenuController {
   constructor(
     @repository(RoleRepository) protected roleRepository: RoleRepository,
-  ) { }
+  ) {}
 
-
-
-  @authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuMenuRoleId,SecuritySpecs.listAction]
-}
-)
-
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuMenuRoleId, SecuritySpecs.listAction],
+  })
   @get('/roles/{id}/menus', {
     responses: {
       '200': {
@@ -73,17 +67,16 @@ export class RoleMenuController {
           }),
         },
       },
-    }) menu: Omit<Menu, '_id'>,
+    })
+    menu: Omit<Menu, '_id'>,
   ): Promise<Menu> {
     return this.roleRepository.menus(id).create(menu);
   }
 
-  @authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuMenuRoleId,SecuritySpecs.editAction]
-}
-)
-
-
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuMenuRoleId, SecuritySpecs.editAction],
+  })
   @patch('/roles/{id}/menus', {
     responses: {
       '200': {
@@ -107,12 +100,10 @@ export class RoleMenuController {
     return this.roleRepository.menus(id).patch(menu, where);
   }
 
-  @authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuMenuRoleId,SecuritySpecs.eliminateAction]
-}
-)
-
-
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuMenuRoleId, SecuritySpecs.deleteAction],
+  })
   @del('/roles/{id}/menus', {
     responses: {
       '200': {

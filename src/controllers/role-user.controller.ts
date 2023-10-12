@@ -15,16 +15,13 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {
-  Role,
-  User,
-} from '../models';
+import {Role, User} from '../models';
 import {RoleRepository} from '../repositories';
 
 export class RoleUserController {
   constructor(
     @repository(RoleRepository) protected roleRepository: RoleRepository,
-  ) { }
+  ) {}
 
   @get('/roles/{id}/users', {
     responses: {
@@ -61,11 +58,12 @@ export class RoleUserController {
           schema: getModelSchemaRef(User, {
             title: 'NewUserInRole',
             exclude: ['_id'],
-            optional: ['roleId']
+            optional: ['roleId'],
           }),
         },
       },
-    }) user: Omit<User, '_id'>,
+    })
+    user: Omit<User, '_id'>,
   ): Promise<User> {
     return this.roleRepository.users(id).create(user);
   }

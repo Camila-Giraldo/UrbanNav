@@ -23,7 +23,7 @@ import {RoleMenuRepository} from '../repositories';
 export class PermissionsController {
   constructor(
     @repository(RoleMenuRepository)
-    public roleMenuRepository : RoleMenuRepository,
+    public roleMenuRepository: RoleMenuRepository,
   ) {}
 
   @post('/permission')
@@ -52,9 +52,7 @@ export class PermissionsController {
     description: 'RoleMenu model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(RoleMenu) where?: Where<RoleMenu>,
-  ): Promise<Count> {
+  async count(@param.where(RoleMenu) where?: Where<RoleMenu>): Promise<Count> {
     return this.roleMenuRepository.count(where);
   }
 
@@ -106,7 +104,8 @@ export class PermissionsController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(RoleMenu, {exclude: 'where'}) filter?: FilterExcludingWhere<RoleMenu>
+    @param.filter(RoleMenu, {exclude: 'where'})
+    filter?: FilterExcludingWhere<RoleMenu>,
   ): Promise<RoleMenu> {
     return this.roleMenuRepository.findById(id, filter);
   }

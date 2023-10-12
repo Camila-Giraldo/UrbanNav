@@ -25,11 +25,13 @@ import {SecuritySpecs} from '../config/security.config';
 export class MenuControllerController {
   constructor(
     @repository(MenuRepository)
-    public menuRepository : MenuRepository,
+    public menuRepository: MenuRepository,
   ) {}
 
-
-
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuMenuId, SecuritySpecs.saveAction],
+  })
   @post('/menu')
   @response(200, {
     description: 'Menu model instance',
@@ -51,28 +53,23 @@ export class MenuControllerController {
     return this.menuRepository.create(menu);
   }
 
-  @authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuMenuId,SecuritySpecs.listAction]
-}
-)
-
-
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuMenuId, SecuritySpecs.listAction],
+  })
   @get('/menu/count')
   @response(200, {
     description: 'Menu model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(Menu) where?: Where<Menu>,
-  ): Promise<Count> {
+  async count(@param.where(Menu) where?: Where<Menu>): Promise<Count> {
     return this.menuRepository.count(where);
   }
 
-  @authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuMenuId,SecuritySpecs.listAction]
-}
-)
-
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuMenuId, SecuritySpecs.listAction],
+  })
   @get('/menu')
   @response(200, {
     description: 'Array of Menu model instances',
@@ -85,17 +82,14 @@ export class MenuControllerController {
       },
     },
   })
-  async find(
-    @param.filter(Menu) filter?: Filter<Menu>,
-  ): Promise<Menu[]> {
+  async find(@param.filter(Menu) filter?: Filter<Menu>): Promise<Menu[]> {
     return this.menuRepository.find(filter);
   }
 
-
-  @authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuMenuId,SecuritySpecs.editAction]
-}
-)
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuMenuId, SecuritySpecs.editAction],
+  })
   @patch('/menu')
   @response(200, {
     description: 'Menu PATCH success count',
@@ -115,12 +109,10 @@ export class MenuControllerController {
     return this.menuRepository.updateAll(menu, where);
   }
 
-  @authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuMenuId,SecuritySpecs.listAction]
-}
-)
-
-
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuMenuId, SecuritySpecs.listAction],
+  })
   @get('/menu/{id}')
   @response(200, {
     description: 'Menu model instance',
@@ -132,16 +124,15 @@ export class MenuControllerController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(Menu, {exclude: 'where'}) filter?: FilterExcludingWhere<Menu>
+    @param.filter(Menu, {exclude: 'where'}) filter?: FilterExcludingWhere<Menu>,
   ): Promise<Menu> {
     return this.menuRepository.findById(id, filter);
   }
 
-
-  @authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuMenuId,SecuritySpecs.editAction]
-}
-)
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuMenuId, SecuritySpecs.editAction],
+  })
   @patch('/menu/{id}')
   @response(204, {
     description: 'Menu PATCH success',
@@ -160,6 +151,10 @@ export class MenuControllerController {
     await this.menuRepository.updateById(id, menu);
   }
 
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuMenuId, SecuritySpecs.editAction],
+  })
   @put('/menu/{id}')
   @response(204, {
     description: 'Menu PUT success',
@@ -171,11 +166,10 @@ export class MenuControllerController {
     await this.menuRepository.replaceById(id, menu);
   }
 
-  @authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuMenuId,SecuritySpecs.eliminateAction]
-}
-)
-
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuMenuId, SecuritySpecs.deleteAction],
+  })
   @del('/menu/{id}')
   @response(204, {
     description: 'Menu DELETE success',

@@ -5,7 +5,7 @@ import {
   repository,
   Where,
 } from '@loopback/repository';
-  import {
+import {
   del,
   get,
   getModelSchemaRef,
@@ -15,20 +15,14 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {
-Menu,
-RoleMenu,
-Role,
-} from '../models';
+import {Menu, RoleMenu, Role} from '../models';
 import {MenuRepository} from '../repositories';
 import {authenticate} from '@loopback/authentication';
-
- 
 
 export class MenuRoleController {
   constructor(
     @repository(MenuRepository) protected menuRepository: MenuRepository,
-  ) { }
+  ) {}
 
   @get('/menus/{id}/roles', {
     responses: {
@@ -68,7 +62,8 @@ export class MenuRoleController {
           }),
         },
       },
-    }) role: Omit<Role, '_id'>,
+    })
+    role: Omit<Role, '_id'>,
   ): Promise<Role> {
     return this.menuRepository.roles(id).create(role);
   }

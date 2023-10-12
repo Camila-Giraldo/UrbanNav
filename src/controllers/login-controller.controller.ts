@@ -25,11 +25,13 @@ import {authenticate} from '@loopback/authentication';
 export class LoginControllerController {
   constructor(
     @repository(LoginRepository)
-    public loginRepository : LoginRepository,
+    public loginRepository: LoginRepository,
   ) {}
 
-
-
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuLoginId, SecuritySpecs.saveAction],
+  })
   @post('/login')
   @response(200, {
     description: 'Login model instance',
@@ -51,29 +53,23 @@ export class LoginControllerController {
     return this.loginRepository.create(login);
   }
 
-
-  @authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuLoginId,SecuritySpecs.listAction]
-}
-)
-
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuLoginId, SecuritySpecs.listAction],
+  })
   @get('/login/count')
   @response(200, {
     description: 'Login model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(Login) where?: Where<Login>,
-  ): Promise<Count> {
+  async count(@param.where(Login) where?: Where<Login>): Promise<Count> {
     return this.loginRepository.count(where);
   }
 
-
-
-@authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuLoginId,SecuritySpecs.listAction]
-}
-)
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuLoginId, SecuritySpecs.listAction],
+  })
   @get('/login')
   @response(200, {
     description: 'Array of Login model instances',
@@ -86,18 +82,14 @@ export class LoginControllerController {
       },
     },
   })
-  async find(
-    @param.filter(Login) filter?: Filter<Login>,
-  ): Promise<Login[]> {
+  async find(@param.filter(Login) filter?: Filter<Login>): Promise<Login[]> {
     return this.loginRepository.find(filter);
   }
 
-
-  @authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuLoginId,SecuritySpecs.editAction]
-}
-)
-
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuLoginId, SecuritySpecs.editAction],
+  })
   @patch('/login')
   @response(200, {
     description: 'Login PATCH success count',
@@ -117,12 +109,10 @@ export class LoginControllerController {
     return this.loginRepository.updateAll(login, where);
   }
 
-
-  @authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuLoginId,SecuritySpecs.listAction]
-}
-)
-
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuLoginId, SecuritySpecs.listAction],
+  })
   @get('/login/{id}')
   @response(200, {
     description: 'Login model instance',
@@ -134,17 +124,16 @@ export class LoginControllerController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(Login, {exclude: 'where'}) filter?: FilterExcludingWhere<Login>
+    @param.filter(Login, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Login>,
   ): Promise<Login> {
     return this.loginRepository.findById(id, filter);
   }
 
-  @authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuLoginId,SecuritySpecs.editAction]
-}
-)
-
-
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuLoginId, SecuritySpecs.editAction],
+  })
   @patch('/login/{id}')
   @response(204, {
     description: 'Login PATCH success',
@@ -163,11 +152,10 @@ export class LoginControllerController {
     await this.loginRepository.updateById(id, login);
   }
 
-  @authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuLoginId,SecuritySpecs.editAction]
-}
-)
-
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuLoginId, SecuritySpecs.editAction],
+  })
   @put('/login/{id}')
   @response(204, {
     description: 'Login PUT success',
@@ -179,11 +167,10 @@ export class LoginControllerController {
     await this.loginRepository.replaceById(id, login);
   }
 
-@authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuLoginId,SecuritySpecs.eliminateAction]
-}
-)
-
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuLoginId, SecuritySpecs.deleteAction],
+  })
   @del('/login/{id}')
   @response(204, {
     description: 'Login DELETE success',

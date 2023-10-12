@@ -25,9 +25,14 @@ import {authenticate} from '@loopback/authentication';
 export class RoleControllerController {
   constructor(
     @repository(RoleRepository)
-    public roleRepository : RoleRepository,
+    public roleRepository: RoleRepository,
   ) {}
 
+
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuRolId, SecuritySpecs.saveAction],
+  })
   @post('/role')
   @response(200, {
     description: 'Role model instance',
@@ -49,30 +54,23 @@ export class RoleControllerController {
     return this.roleRepository.create(role);
   }
 
-
-@authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuRolId,SecuritySpecs.listAction]
-}
-)
-
-
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuRolId, SecuritySpecs.listAction],
+  })
   @get('/role/count')
   @response(200, {
     description: 'Role model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(Role) where?: Where<Role>,
-  ): Promise<Count> {
+  async count(@param.where(Role) where?: Where<Role>): Promise<Count> {
     return this.roleRepository.count(where);
   }
 
-
-  @authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuRolId,SecuritySpecs.listAction]
-}
-)
-
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuRolId, SecuritySpecs.listAction],
+  })
   @get('/role')
   @response(200, {
     description: 'Array of Role model instances',
@@ -85,18 +83,14 @@ export class RoleControllerController {
       },
     },
   })
-  async find(
-    @param.filter(Role) filter?: Filter<Role>,
-  ): Promise<Role[]> {
+  async find(@param.filter(Role) filter?: Filter<Role>): Promise<Role[]> {
     return this.roleRepository.find(filter);
   }
 
-  @authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuRolId,SecuritySpecs.editAction]
-}
-)
-
-
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuRolId, SecuritySpecs.editAction],
+  })
   @patch('/role')
   @response(200, {
     description: 'Role PATCH success count',
@@ -116,13 +110,10 @@ export class RoleControllerController {
     return this.roleRepository.updateAll(role, where);
   }
 
-
-  @authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuRolId,SecuritySpecs.listAction]
-}
-)
-
-
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuRolId, SecuritySpecs.listAction],
+  })
   @get('/role/{id}')
   @response(200, {
     description: 'Role model instance',
@@ -134,17 +125,15 @@ export class RoleControllerController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(Role, {exclude: 'where'}) filter?: FilterExcludingWhere<Role>
+    @param.filter(Role, {exclude: 'where'}) filter?: FilterExcludingWhere<Role>,
   ): Promise<Role> {
     return this.roleRepository.findById(id, filter);
   }
 
-  @authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuRolId,SecuritySpecs.editAction]
-}
-)
-
-
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuRolId, SecuritySpecs.editAction],
+  })
   @patch('/role/{id}')
   @response(204, {
     description: 'Role PATCH success',
@@ -163,6 +152,11 @@ export class RoleControllerController {
     await this.roleRepository.updateById(id, role);
   }
 
+
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuRolId, SecuritySpecs.editAction],
+  })
   @put('/role/{id}')
   @response(204, {
     description: 'Role PUT success',
@@ -174,15 +168,10 @@ export class RoleControllerController {
     await this.roleRepository.replaceById(id, role);
   }
 
-
-  @authenticate({strategy:'auth',
-  options:[SecuritySpecs.menuRolId,SecuritySpecs.eliminateAction]
-}
-)
-
-
-
-
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuRolId, SecuritySpecs.deleteAction],
+  })
   @del('/role/{id}')
   @response(204, {
     description: 'Role DELETE success',

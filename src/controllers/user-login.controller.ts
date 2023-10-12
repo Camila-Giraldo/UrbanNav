@@ -15,16 +15,13 @@ import {
   post,
   requestBody,
 } from '@loopback/rest';
-import {
-  User,
-  Login,
-} from '../models';
+import {User, Login} from '../models';
 import {UserRepository} from '../repositories';
 
 export class UserLoginController {
   constructor(
     @repository(UserRepository) protected userRepository: UserRepository,
-  ) { }
+  ) {}
 
   @get('/users/{id}/logins', {
     responses: {
@@ -61,11 +58,12 @@ export class UserLoginController {
           schema: getModelSchemaRef(Login, {
             title: 'NewLoginInUser',
             exclude: ['_id'],
-            optional: ['userId']
+            optional: ['userId'],
           }),
         },
       },
-    }) login: Omit<Login, '_id'>,
+    })
+    login: Omit<Login, '_id'>,
   ): Promise<Login> {
     return this.userRepository.logins(id).create(login);
   }
