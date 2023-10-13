@@ -5,13 +5,12 @@ import {
   AuthenticationStrategy,
 } from '@loopback/authentication';
 import {inject, service} from '@loopback/core';
+import {repository} from '@loopback/repository';
 import {HttpErrors, Request} from '@loopback/rest';
 import {UserProfile} from '@loopback/security';
 import parseBearerToken from 'parse-bearer-token';
-import {SecurityUserService} from '../services';
-import {repository} from '@loopback/repository';
-import {RoleMenu} from '../models';
 import {RoleMenuRepository} from '../repositories';
+import {AuthService, SecurityUserService} from '../services';
 
 export class AuthStrategy implements AuthenticationStrategy {
   name: string = 'auth';
@@ -23,6 +22,8 @@ export class AuthStrategy implements AuthenticationStrategy {
     private metadata: AuthenticationMetadata[],
     @repository(RoleMenuRepository)
     private repositoryRoleMenu: RoleMenuRepository,
+    @service(AuthService)
+    private serviceAuth: AuthService,
   ) {}
 
   /**
@@ -39,48 +40,11 @@ export class AuthStrategy implements AuthenticationStrategy {
       let action: string = this.metadata[0].options![1];
       console.log(this.metadata);
 
-      let permission = await this.repositoryRoleMenu.findOne({
-        where: {
-          roleId: idRol,
-          menuId: idMenu,
-        },
-      });
-      let continuar: boolean = false;
-      if (permission) {
-        switch (action) {
-          case 'save':
-            continuar = permission.save;
-            break;
-          case 'edit':
-            continuar = permission.edit;
-            break;
-          case 'list':
-            continuar = permission.list;
-            break;
-          case 'delete':
-            continuar = permission.delete;
-            break;
-          case 'download':
-            continuar = permission.download;
-            break;
-          default:
-            throw new HttpErrors[401](
-              'it is not possible to execute the action because it does not exist',
-            );
-        }
-
-        if (continuar) {
-          let profile: UserProfile = Object.assign({
-            allowed: 'Ok',
-          });
-          return profile;
-        } else {
-          return undefined;
-        }
-      } else {
-        throw new HttpErrors[401](
-          'it is not possible to execute the action due to lack of permissions',
-        );
+      try{
+        let res = await this.serviceAuth.VerificarPermisoDeUsuarioPorRol(idRol, idMenu, action);
+        return res;
+      }catch(e){
+        throw e;
       }
     }
     throw new HttpErrors[401](

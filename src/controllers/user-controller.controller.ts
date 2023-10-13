@@ -37,10 +37,10 @@ export class UserControllerController {
     public repositoryLogin: LoginRepository,
   ) {}
 
-  @authenticate({
+  /*@authenticate({
     strategy: 'auth',
     options: [SecuritySpecs.menuUserId, SecuritySpecs.saveAction],
-  })
+  })*/
   @post('/user')
   @response(200, {
     description: 'User model instance',
