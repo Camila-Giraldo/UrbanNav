@@ -33,7 +33,7 @@ export class UserControllerController {
     @repository(UserRepository)
     public userRepository: UserRepository,
     @service(SecurityUserService)
-    public servicioSeguridad: SecurityUserService,
+    public securityService: SecurityUserService,
     @repository(LoginRepository)
     public repositoryLogin: LoginRepository,
     @service(AuthService)
@@ -62,8 +62,8 @@ export class UserControllerController {
     })
     user: Omit<User, '_id'>,
   ): Promise<User> {
-    let clave = this.servicioSeguridad.createRandomText(10);
-    let claveCifrada = this.servicioSeguridad.cifrarTexto(clave);
+    let clave = this.securityService.createRandomText(10);
+    let claveCifrada = this.securityService.cifrarTexto(clave);
     user.password = claveCifrada;
     //Send Email
     return this.userRepository.create(user);
@@ -213,9 +213,9 @@ export class UserControllerController {
     })
     credentials: Credentials,
   ): Promise<object> {
-    let user = await this.servicioSeguridad.identifyUser(credentials);
+    let user = await this.securityService.identifyUser(credentials);
     if (user) {
-      let code2fa = this.servicioSeguridad.createRandomText(5);
+      let code2fa = this.securityService.createRandomText(5);
       let login: Login = new Login();
       login.userId = user._id!;
       login.code2Fa = code2fa;
@@ -245,7 +245,8 @@ export class UserControllerController {
     })
     data: PermissionRoleMenu,
   ): Promise<UserProfile | undefined> {
-    return await this.serviceAuth.VerificarPermisoDeUsuarioPorRol(data.idRole, data.idMenu, data.action);
+    let idRole = this.securityService.getRolFromToken(data.token);
+    return await this.serviceAuth.VerifyPermissionOfUserByRole(idRole, data.idMenu, data.action);
   }
 
   @post('/verificar-2Fa')
@@ -262,9 +263,9 @@ export class UserControllerController {
     })
     credentials: AuthenticationFactor,
   ): Promise<object> {
-    const user = await this.servicioSeguridad.verifyCode2fa(credentials);
+    const user = await this.securityService.verifyCode2fa(credentials);
     if (user) {
-      const token = this.servicioSeguridad.createToken(user);
+      const token = this.securityService.createToken(user);
       if (user) {
         user.password = '';
         try {

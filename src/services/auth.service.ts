@@ -1,8 +1,8 @@
-import {injectable, /* inject, */ BindingScope} from '@loopback/core';
+import {/* inject, */ BindingScope, injectable} from '@loopback/core';
 import {repository} from '@loopback/repository';
 import {HttpErrors} from '@loopback/rest';
-import {RoleMenuRepository} from '../repositories';
 import {UserProfile} from '@loopback/security';
+import {RoleMenuRepository} from '../repositories';
 
 @injectable({scope: BindingScope.TRANSIENT})
 export class AuthService {
@@ -11,10 +11,14 @@ export class AuthService {
     private repositoryRoleMenu: RoleMenuRepository,
   ) {}
 
-  async VerificarPermisoDeUsuarioPorRol(idRol:string, idMenu: string, action: string): Promise<UserProfile | undefined>{
+  async VerifyPermissionOfUserByRole(
+    idRole: string,
+    idMenu: string,
+    action: string,
+  ): Promise<UserProfile | undefined> {
     let permission = await this.repositoryRoleMenu.findOne({
       where: {
-        roleId: idRol,
+        roleId: idRole,
         menuId: idMenu,
       },
     });
