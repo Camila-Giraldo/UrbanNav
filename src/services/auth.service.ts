@@ -44,7 +44,7 @@ export class AuthService {
 
       if (continuar) {
         let profile: UserProfile = Object.assign({
-          allowed: 'Ok',
+          permitido: 'OK',
         });
         return profile;
       } else {
