@@ -1,5 +1,5 @@
 export namespace SecuritySpecs {
-  export const keyJWT: string = "mySecretKey"
+  export const keyJWT = process.env.SECRET_PASSWORD_JWT;
   export const menuUserId="652675f134935694269bc95f";
   export const menuRolId="65256c9d9d738d049ca64a37";
   export const menuLoginId="6526ae8903fd5690809a65a3";
@@ -11,5 +11,6 @@ export namespace SecuritySpecs {
   export const editAction="edit";
   export const deleteAction="delete";
   export const downloadAction="download";
+  export const mongodbConnectionString=process.env.CONNECTION_STRING_MONGODB;
 
 }
