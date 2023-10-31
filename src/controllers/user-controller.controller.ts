@@ -22,7 +22,7 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import {AuthenticationFactor, Credentials, Login, PermissionRoleMenu, User} from '../models';
+import {AuthenticationFactor, Credentials, CredentialsGetPassword, Login, PermissionRoleMenu, User} from '../models';
 import {LoginRepository, UserRepository} from '../repositories';
 import {AuthService, NotificationsService, SecurityUserService} from '../services';
 import {SecuritySpecs} from '../config/security.config';
@@ -239,6 +239,44 @@ export class UserControllerController {
       return user;
     }
     return new HttpErrors[401]('Las credentials no son correctas');
+  }
+
+  @post('/get-new-password')
+  @response(200, {
+    description: 'Identificar un user por correo y clave',
+    content: {'application/json': {schema: getModelSchemaRef(User)}},
+  })
+  async getUserPassword(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(CredentialsGetPassword),
+        },
+      },
+    })
+    credentials: CredentialsGetPassword,
+  ): Promise<object> {
+    let user = await this.userRepository.findOne({
+      where: {
+        email: credentials.email,
+      }
+    })
+    if (user) {
+      let newPassword = this.securityService.createRandomText(10);
+      console.log(newPassword);
+      let hiddenPassword = this.securityService.cifrarTexto(newPassword);
+      user.password = hiddenPassword;
+      this.userRepository.updateById(user._id,user);
+      //Send notification using email or sms
+      let data = {
+        destinationNumber:user.phoneNumber,
+        messageContent: `Hola ${user.firstName} ${user.firstLastname}, your new password is: ${newPassword} please don't share with anyone.`,
+      }
+      let url = ConfigNotifications.urlNotificationsSms;
+      this.serviceNotifications.SendNotification(data,url);
+      return user;
+    }
+    return new HttpErrors[401]("It was not posible to find the user");
   }
 
   @post('/validate-permission')
