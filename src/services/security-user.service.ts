@@ -34,7 +34,7 @@ export class SecurityUserService {
    * @returns cadena cifrada con MD5
    */
 
-  cifrarTexto(cadena: string): string {
+  encryptText(cadena: string): string {
     let cadenaCifrada = MD5(cadena).toString();
     return cadenaCifrada;
   }
@@ -95,9 +95,8 @@ export class SecurityUserService {
    * @param tk el token
    * @returns el _id del rol
    */
-  getRolFromToken(tk:string): string {
-    let obj=jwt.verify(tk, SecuritySpecs.keyJWT);
+  getRolFromToken(tk: string): string {
+    let obj = jwt.verify(tk, SecuritySpecs.keyJWT);
     return obj.role;
-
   }
 }

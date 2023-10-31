@@ -22,23 +22,23 @@ export class AuthService {
         menuId: idMenu,
       },
     });
-    let continuar: boolean = false;
+    let next: boolean = false;
     if (permission) {
       switch (action) {
         case 'save':
-          continuar = permission.save;
+          next = permission.save;
           break;
         case 'edit':
-          continuar = permission.edit;
+          next = permission.edit;
           break;
         case 'list':
-          continuar = permission.list;
+          next = permission.list;
           break;
         case 'delete':
-          continuar = permission.delete;
+          next = permission.delete;
           break;
         case 'download':
-          continuar = permission.download;
+          next = permission.download;
           break;
         default:
           throw new HttpErrors[401](
@@ -46,9 +46,9 @@ export class AuthService {
           );
       }
 
-      if (continuar) {
+      if (next) {
         let profile: UserProfile = Object.assign({
-          permitido: 'OK',
+          permitted: 'OK',
         });
         return profile;
       } else {

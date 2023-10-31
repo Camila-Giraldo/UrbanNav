@@ -22,12 +22,23 @@ import {
   requestBody,
   response,
 } from '@loopback/rest';
-import {AuthenticationFactor, Credentials, CredentialsGetPassword, Login, PermissionRoleMenu, User} from '../models';
-import {LoginRepository, UserRepository} from '../repositories';
-import {AuthService, NotificationsService, SecurityUserService} from '../services';
-import {SecuritySpecs} from '../config/security.config';
 import {UserProfile} from '@loopback/security';
 import {ConfigNotifications} from '../config/notifications.config';
+import {SecuritySpecs} from '../config/security.config';
+import {
+  AuthenticationFactor,
+  Credentials,
+  CredentialsGetPassword,
+  Login,
+  PermissionRoleMenu,
+  User,
+} from '../models';
+import {LoginRepository, UserRepository} from '../repositories';
+import {
+  AuthService,
+  NotificationsService,
+  SecurityUserService,
+} from '../services';
 
 export class UserControllerController {
   constructor(
@@ -65,10 +76,19 @@ export class UserControllerController {
     })
     user: Omit<User, '_id'>,
   ): Promise<User> {
-    let clave = this.securityService.createRandomText(10);
-    let claveCifrada = this.securityService.cifrarTexto(clave);
-    user.password = claveCifrada;
+    let password = this.securityService.createRandomText(10);
+    let encryptedPassword = this.securityService.encryptText(password);
+    user.password = encryptedPassword;
     //Send Email
+    let data = {
+      destinationEmail: user.email,
+      destinationName: `${user.firstName} ${user.firstLastname}`,
+      emailContent: `Welcome ${user.firstName}, you now are part of the UrbanNav system`,
+      emailSubject: ConfigNotifications.subjectPost,
+    };
+
+    let url = ConfigNotifications.urlPostNotification;
+    this.serviceNotifications.SendNotification(data, url);
     return this.userRepository.create(user);
   }
 
@@ -201,9 +221,9 @@ export class UserControllerController {
    * Métodos personalizados para la Api
    */
 
-  @post('/identificar-user')
+  @post('/identify-user')
   @response(200, {
-    description: 'Identificar un user por correo y clave',
+    description: 'Identify an user with his credentials',
     content: {'application/json': {schema: getModelSchemaRef(User)}},
   })
   async identifyuser(
@@ -229,13 +249,13 @@ export class UserControllerController {
       user.password = '';
       //Send notification using email or sms
       let data = {
-        destinationEmail:user.email,
-        destinationName:user.firstName + ' '+user.firstLastname,
+        destinationEmail: user.email,
+        destinationName: user.firstName + ' ' + user.firstLastname,
         emailSubject: ConfigNotifications.subject2fa,
         emailContent: `Your second factor authentication code is: ${code2fa} please don't share this code with anyone.`,
-      }
+      };
       let url = ConfigNotifications.urlNotifications2fa;
-      this.serviceNotifications.SendNotification(data,url);
+      this.serviceNotifications.SendNotification(data, url);
       return user;
     }
     return new HttpErrors[401]('Las credentials no son correctas');
@@ -243,7 +263,7 @@ export class UserControllerController {
 
   @post('/get-new-password')
   @response(200, {
-    description: 'Identificar un user por correo y clave',
+    description: 'Identificar un user por correo y password',
     content: {'application/json': {schema: getModelSchemaRef(User)}},
   })
   async getUserPassword(
@@ -259,30 +279,32 @@ export class UserControllerController {
     let user = await this.userRepository.findOne({
       where: {
         email: credentials.email,
-      }
-    })
+      },
+    });
     if (user) {
       let newPassword = this.securityService.createRandomText(10);
       console.log(newPassword);
-      let hiddenPassword = this.securityService.cifrarTexto(newPassword);
+      let hiddenPassword = this.securityService.encryptText(newPassword);
       user.password = hiddenPassword;
-      this.userRepository.updateById(user._id,user);
+      this.userRepository.updateById(user._id, user);
       //Send notification using email or sms
       let data = {
-        destinationNumber:user.phoneNumber,
+        destinationNumber: user.phoneNumber,
         messageContent: `Hola ${user.firstName} ${user.firstLastname}, your new password is: ${newPassword} please don't share with anyone.`,
-      }
+      };
       let url = ConfigNotifications.urlNotificationsSms;
-      this.serviceNotifications.SendNotification(data,url);
+      this.serviceNotifications.SendNotification(data, url);
       return user;
     }
-    return new HttpErrors[401]("It was not posible to find the user");
+    return new HttpErrors[401]('It was not posible to find the user');
   }
 
   @post('/validate-permission')
   @response(200, {
-    description: 'Validación de permisos de un usuario para lógica de negocio',
-    content: {'application/json': {schema: getModelSchemaRef(PermissionRoleMenu)}},
+    description: 'Validación de permisos de un user para lógica de negocio',
+    content: {
+      'application/json': {schema: getModelSchemaRef(PermissionRoleMenu)},
+    },
   })
   async ValidatePermissionOfUser(
     @requestBody({
@@ -295,14 +317,18 @@ export class UserControllerController {
     data: PermissionRoleMenu,
   ): Promise<UserProfile | undefined> {
     let idRole = this.securityService.getRolFromToken(data.token);
-    return await this.serviceAuth.VerifyPermissionOfUserByRole(idRole, data.idMenu, data.action);
+    return await this.serviceAuth.VerifyPermissionOfUserByRole(
+      idRole,
+      data.idMenu,
+      data.action,
+    );
   }
 
-  @post('/verificar-2Fa')
+  @post('/verify-2Fa')
   @response(200, {
     description: 'Validar un código de 2Fa',
   })
-  async validarCodigo2Fa(
+  async verify2FaCode(
     @requestBody({
       content: {
         'application/json': {
@@ -329,7 +355,7 @@ export class UserControllerController {
           );
         } catch {
           console.log(
-            'No se ha almacenado el cambio del estado de token en la base de datos',
+            'No se ha almacenado el cambio del estado de token en la base de data',
           );
         }
         return {
