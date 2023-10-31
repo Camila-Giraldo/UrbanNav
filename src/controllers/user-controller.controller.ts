@@ -87,7 +87,7 @@ export class UserControllerController {
       emailSubject: ConfigNotifications.subjectPost,
     };
 
-    let url = ConfigNotifications.urlPostNotification;
+    let url = ConfigNotifications.urlEmail;
     this.serviceNotifications.SendNotification(data, url);
     return this.userRepository.create(user);
   }
@@ -250,11 +250,11 @@ export class UserControllerController {
       //Send notification using email or sms
       let data = {
         destinationEmail: user.email,
-        destinationName: user.firstName + ' ' + user.firstLastname,
+        destinationName: `${user.firstName} ${user.firstLastname}`,
         emailSubject: ConfigNotifications.subject2fa,
         emailContent: `Your second factor authentication code is: ${code2fa} please don't share this code with anyone.`,
       };
-      let url = ConfigNotifications.urlNotifications2fa;
+      let url = ConfigNotifications.urlEmail;
       this.serviceNotifications.SendNotification(data, url);
       return user;
     }
@@ -292,7 +292,7 @@ export class UserControllerController {
         destinationNumber: user.phoneNumber,
         messageContent: `Hola ${user.firstName} ${user.firstLastname}, your new password is: ${newPassword} please don't share with anyone.`,
       };
-      let url = ConfigNotifications.urlNotificationsSmsNewPassword;
+      let url = ConfigNotifications.urlSMS;
       this.serviceNotifications.SendNotification(data, url);
       return user;
     }
@@ -364,7 +364,7 @@ export class UserControllerController {
           destinationNumber: user.phoneNumber,
           messageContent: `Hello ${user.firstName} ${user.firstLastname}, you have started a session in UrbanNav.`,
         };
-        let url = ConfigNotifications.urlNotificationsSmsStartSession;
+        let url = ConfigNotifications.urlSMS;
         this.serviceNotifications.SendNotification(data, url);
 
         return {
