@@ -290,7 +290,7 @@ export class UserControllerController {
       //Send notification using email or sms
       let data = {
         destinationNumber: user.phoneNumber,
-        messageContent: `Hola ${user.firstName} ${user.firstLastname}, your new password is: ${newPassword} please don't share with anyone.`,
+        messageContent: `Hello ${user.firstName} ${user.firstLastname}, your new password is: ${newPassword} please don't share with anyone.`,
       };
       let url = ConfigNotifications.urlSMS;
       this.serviceNotifications.SendNotification(data, url);
