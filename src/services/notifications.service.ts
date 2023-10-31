@@ -5,7 +5,7 @@ const fetch = require('node-fetch');
 export class NotificationsService {
   constructor(/* Add @inject to inject parameters */) {}
 
-  EnviarNotificacion(data: any, url: string){
+  SendNotification(data: any, url: string){
     fetch(url,{
       method: 'post',
       body: JSON.stringify(data),

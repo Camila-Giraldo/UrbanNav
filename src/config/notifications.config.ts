@@ -1,3 +1,4 @@
 export namespace ConfigNotifications {
-  export const asunto2fa: string = 'Código de verificación';
+  export const subject2fa: string = 'Verificatión code';
+  export const urlNotifications2fa: string = 'http://localhost:8081/Notifications/send-2fa-email';
 }

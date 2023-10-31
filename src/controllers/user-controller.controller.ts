@@ -227,13 +227,15 @@ export class UserControllerController {
       login.tokenStatus = false;
       this.repositoryLogin.create(login);
       user.password = '';
-      //notificar por correo o sms
+      //Send notification using email or sms
       let data = {
-        correoDestino:user.email,
-        NombreDestino:user.firstName + ' '+user.firstLastname,
-        contenidoCorreo: `Su código de segundo factor de autenticación es: ${code2fa}`,
-        asuntoCorreo: ConfigNotifications.asunto2fa,
+        destinationEmail:user.email,
+        destinationName:user.firstName + ' '+user.firstLastname,
+        emailSubject: ConfigNotifications.subject2fa,
+        emailContent: `Your second factor authentication code is: ${code2fa} please don't share this code with anyone.`,
       }
+      let url = ConfigNotifications.urlNotifications2fa;
+      this.serviceNotifications.SendNotification(data,url);
       return user;
     }
     return new HttpErrors[401]('Las credentials no son correctas');
