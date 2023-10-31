@@ -18,7 +18,7 @@ export class SecurityUserService {
 
   /**
    * Crear una clave aleatoria
-   * @returns cadena aleatoria de n caracteres
+   * @returns text aleatoria de n caracteres
    */
   createRandomText(n: number): string {
     let clave = generator.generate({
@@ -30,13 +30,13 @@ export class SecurityUserService {
 
   /**
    *  cifrar una cadena con el algoritmo MD5
-   * @param cadena texto a cifrar
-   * @returns cadena cifrada con MD5
+   * @param text texto a cifrar
+   * @returns Cadena cifrada con MD5
    */
 
-  encryptText(cadena: string): string {
-    let cadenaCifrada = MD5(cadena).toString();
-    return cadenaCifrada;
+  encryptText(text: string): string {
+    let encryptedText = MD5(text).toString();
+    return encryptedText;
   }
 
   /**
@@ -51,7 +51,7 @@ export class SecurityUserService {
         password: credentials.password,
       },
     });
-    return user as User;
+    return user;
   }
 
   /**

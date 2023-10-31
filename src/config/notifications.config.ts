@@ -5,6 +5,8 @@ export namespace ConfigNotifications {
     'http://localhost:8081/Notifications/welcome-email';
   export const urlNotifications2fa: string =
     'http://localhost:8081/Notifications/2fa-email';
-  export const urlNotificationsSms: string =
-    'http://localhost:8081/Notifications/send-sms';
+  export const urlNotificationsSmsNewPassword: string =
+    'http://localhost:8081/Notifications/sms-new-password';
+  export const urlNotificationsSmsStartSession =
+    'http://localhost:8081/Notifications/sms-session-start';
 }

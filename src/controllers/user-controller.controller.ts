@@ -292,7 +292,7 @@ export class UserControllerController {
         destinationNumber: user.phoneNumber,
         messageContent: `Hola ${user.firstName} ${user.firstLastname}, your new password is: ${newPassword} please don't share with anyone.`,
       };
-      let url = ConfigNotifications.urlNotificationsSms;
+      let url = ConfigNotifications.urlNotificationsSmsNewPassword;
       this.serviceNotifications.SendNotification(data, url);
       return user;
     }
@@ -358,6 +358,15 @@ export class UserControllerController {
             'No se ha almacenado el cambio del estado de token en la base de data',
           );
         }
+
+        // Send sms with started session
+        let data = {
+          destinationNumber: user.phoneNumber,
+          messageContent: `Hello ${user.firstName} ${user.firstLastname}, you have started a session in UrbanNav.`,
+        };
+        let url = ConfigNotifications.urlNotificationsSmsStartSession;
+        this.serviceNotifications.SendNotification(data, url);
+
         return {
           user: user,
           token: token,
