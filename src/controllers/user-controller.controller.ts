@@ -54,10 +54,10 @@ export class UserControllerController {
     public serviceNotifications: NotificationsService,
   ) {}
 
-  @authenticate({
+  /*@authenticate({
     strategy: 'auth',
     options: [SecuritySpecs.menuUserId, SecuritySpecs.saveAction],
-  })
+  })*/
   @post('/user')
   @response(200, {
     description: 'User model instance',
@@ -83,10 +83,9 @@ export class UserControllerController {
     let data = {
       destinationEmail: user.email,
       destinationName: `${user.firstName} ${user.firstLastname}`,
-      emailContent: `Welcome ${user.firstName}, you now are part of the UrbanNav system`,
       emailSubject: ConfigNotifications.subjectPost,
+      emailContent: `Welcome ${user.firstName}, you now are part of the UrbanNav family, CONGRATULATIONS!!!`
     };
-
     let url = ConfigNotifications.urlEmail;
     this.serviceNotifications.SendNotification(data, url);
     return this.userRepository.create(user);
