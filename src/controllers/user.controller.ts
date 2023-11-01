@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable prefer-const */
+import {authenticate} from '@loopback/authentication';
 import {service} from '@loopback/core';
 import {
   Count,
@@ -23,6 +24,7 @@ import {
 } from '@loopback/rest';
 import {UserProfile} from '@loopback/security';
 import {ConfigNotifications} from '../config/notifications.config';
+import {SecuritySpecs} from '../config/security.config';
 import {
   AuthenticationFactor,
   Credentials,
@@ -52,10 +54,10 @@ export class UserController {
     public serviceNotifications: NotificationsService,
   ) {}
 
-  /*@authenticate({
+  @authenticate({
     strategy: 'auth',
-    options: [SecuritySpecs.menuUserId, SecuritySpecs.saveAction],
-  })*/
+    options: [SecuritySpecs.menuAdminId, SecuritySpecs.saveAction],
+  })
   @post('/user')
   @response(200, {
     description: 'User model instance',
@@ -89,10 +91,10 @@ export class UserController {
     return this.userRepository.create(user);
   }
 
-  // @authenticate({
-  //   strategy: 'auth',
-  //   options: [SecuritySpecs.menuUserId, SecuritySpecs.listAction],
-  // })
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuAdminId, SecuritySpecs.listAction],
+  })
   @get('/user/count')
   @response(200, {
     description: 'User model count',
@@ -102,10 +104,10 @@ export class UserController {
     return this.userRepository.count(where);
   }
 
-  // @authenticate({
-  //   strategy: 'auth',
-  //   options: [SecuritySpecs.menuUserId, SecuritySpecs.listAction],
-  // })
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuAdminId, SecuritySpecs.listAction],
+  })
   @get('/user')
   @response(200, {
     description: 'Array of User model instances',
@@ -122,10 +124,10 @@ export class UserController {
     return this.userRepository.find(filter);
   }
 
-  // @authenticate({
-  //   strategy: 'auth',
-  //   options: [SecuritySpecs.menuUserId, SecuritySpecs.editAction],
-  // })
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuAdminId, SecuritySpecs.editAction],
+  })
   @patch('/user')
   @response(200, {
     description: 'User PATCH success count',
@@ -145,10 +147,10 @@ export class UserController {
     return this.userRepository.updateAll(user, where);
   }
 
-  // @authenticate({
-  //   strategy: 'auth',
-  //   options: [SecuritySpecs.menuUserId, SecuritySpecs.listAction],
-  // })
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuAdminId, SecuritySpecs.listAction],
+  })
   @get('/user/{id}')
   @response(200, {
     description: 'User model instance',
@@ -165,10 +167,10 @@ export class UserController {
     return this.userRepository.findById(id, filter);
   }
 
-  // @authenticate({
-  //   strategy: 'auth',
-  //   options: [SecuritySpecs.menuUserId, SecuritySpecs.editAction],
-  // })
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuAdminId, SecuritySpecs.editAction],
+  })
   @patch('/user/{id}')
   @response(204, {
     description: 'User PATCH success',
@@ -187,10 +189,10 @@ export class UserController {
     await this.userRepository.updateById(id, user);
   }
 
-  // @authenticate({
-  //   strategy: 'auth',
-  //   options: [SecuritySpecs.menuUserId, SecuritySpecs.editAction],
-  // })
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuAdminId, SecuritySpecs.editAction],
+  })
   @put('/user/{id}')
   @response(204, {
     description: 'User PUT success',
@@ -202,10 +204,10 @@ export class UserController {
     await this.userRepository.replaceById(id, user);
   }
 
-  // @authenticate({
-  //   strategy: 'auth',
-  //   options: [SecuritySpecs.menuUserId, SecuritySpecs.deleteAction],
-  // })
+  @authenticate({
+    strategy: 'auth',
+    options: [SecuritySpecs.menuAdminId, SecuritySpecs.deleteAction],
+  })
   @del('/user/{id}')
   @response(204, {
     description: 'User DELETE success',
