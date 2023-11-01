@@ -317,6 +317,7 @@ export class UserControllerController {
     data: PermissionRoleMenu,
   ): Promise<UserProfile | undefined> {
     let idRole = this.securityService.getRolFromToken(data.token);
+    console.log(idRole);
     return await this.serviceAuth.VerifyPermissionOfUserByRole(
       idRole,
       data.idMenu,
