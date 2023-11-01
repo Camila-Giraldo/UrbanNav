@@ -1,3 +1,4 @@
+import {authenticate} from '@loopback/authentication';
 import {
   Count,
   CountSchema,
@@ -7,22 +8,21 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
+import {SecuritySpecs} from '../config/security.config';
 import {Login} from '../models';
 import {LoginRepository} from '../repositories';
-import {SecuritySpecs} from '../config/security.config';
-import {authenticate} from '@loopback/authentication';
 
-export class LoginControllerController {
+export class LoginController {
   constructor(
     @repository(LoginRepository)
     public loginRepository: LoginRepository,

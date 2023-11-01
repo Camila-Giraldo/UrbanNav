@@ -1,3 +1,4 @@
+import {authenticate} from '@loopback/authentication';
 import {
   Count,
   CountSchema,
@@ -7,22 +8,21 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
+import {SecuritySpecs} from '../config/security.config';
 import {Menu} from '../models';
 import {MenuRepository} from '../repositories';
-import {authenticate} from '@loopback/authentication';
-import {SecuritySpecs} from '../config/security.config';
 
-export class MenuControllerController {
+export class MenuController {
   constructor(
     @repository(MenuRepository)
     public menuRepository: MenuRepository,

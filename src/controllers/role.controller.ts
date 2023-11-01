@@ -1,3 +1,4 @@
+import {authenticate} from '@loopback/authentication';
 import {
   Count,
   CountSchema,
@@ -7,27 +8,25 @@ import {
   Where,
 } from '@loopback/repository';
 import {
-  post,
-  param,
+  del,
   get,
   getModelSchemaRef,
+  param,
   patch,
+  post,
   put,
-  del,
   requestBody,
   response,
 } from '@loopback/rest';
+import {SecuritySpecs} from '../config/security.config';
 import {Role} from '../models';
 import {RoleRepository} from '../repositories';
-import {SecuritySpecs} from '../config/security.config';
-import {authenticate} from '@loopback/authentication';
 
-export class RoleControllerController {
+export class RoleController {
   constructor(
     @repository(RoleRepository)
     public roleRepository: RoleRepository,
   ) {}
-
 
   @authenticate({
     strategy: 'auth',
@@ -151,7 +150,6 @@ export class RoleControllerController {
   ): Promise<void> {
     await this.roleRepository.updateById(id, role);
   }
-
 
   @authenticate({
     strategy: 'auth',

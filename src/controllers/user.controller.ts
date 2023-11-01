@@ -38,7 +38,7 @@ import {
   SecurityUserService,
 } from '../services';
 
-export class UserControllerController {
+export class UserController {
   constructor(
     @repository(UserRepository)
     public userRepository: UserRepository,
