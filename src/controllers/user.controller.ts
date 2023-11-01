@@ -348,6 +348,7 @@ export class UserController {
             {
               codeStatus: true,
               token: token,
+              tokenStatus: true,
             },
             {
               codeStatus: false,
