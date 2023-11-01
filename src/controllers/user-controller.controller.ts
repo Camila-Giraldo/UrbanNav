@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable prefer-const */
-import {authenticate} from '@loopback/authentication';
 import {service} from '@loopback/core';
 import {
   Count,
@@ -24,7 +23,6 @@ import {
 } from '@loopback/rest';
 import {UserProfile} from '@loopback/security';
 import {ConfigNotifications} from '../config/notifications.config';
-import {SecuritySpecs} from '../config/security.config';
 import {
   AuthenticationFactor,
   Credentials,
@@ -84,17 +82,17 @@ export class UserControllerController {
       destinationEmail: user.email,
       destinationName: `${user.firstName} ${user.firstLastname}`,
       emailSubject: ConfigNotifications.subjectPost,
-      emailContent: `Welcome ${user.firstName}, you now are part of the UrbanNav family, CONGRATULATIONS!!!`
+      emailContent: `Welcome ${user.firstName}, you now are part of the UrbanNav family, CONGRATULATIONS!!!`,
     };
     let url = ConfigNotifications.urlEmail;
     this.serviceNotifications.SendNotification(data, url);
     return this.userRepository.create(user);
   }
 
-  @authenticate({
-    strategy: 'auth',
-    options: [SecuritySpecs.menuUserId, SecuritySpecs.listAction],
-  })
+  // @authenticate({
+  //   strategy: 'auth',
+  //   options: [SecuritySpecs.menuUserId, SecuritySpecs.listAction],
+  // })
   @get('/user/count')
   @response(200, {
     description: 'User model count',
@@ -104,10 +102,10 @@ export class UserControllerController {
     return this.userRepository.count(where);
   }
 
-  @authenticate({
-    strategy: 'auth',
-    options: [SecuritySpecs.menuUserId, SecuritySpecs.listAction],
-  })
+  // @authenticate({
+  //   strategy: 'auth',
+  //   options: [SecuritySpecs.menuUserId, SecuritySpecs.listAction],
+  // })
   @get('/user')
   @response(200, {
     description: 'Array of User model instances',
@@ -124,10 +122,10 @@ export class UserControllerController {
     return this.userRepository.find(filter);
   }
 
-  @authenticate({
-    strategy: 'auth',
-    options: [SecuritySpecs.menuUserId, SecuritySpecs.editAction],
-  })
+  // @authenticate({
+  //   strategy: 'auth',
+  //   options: [SecuritySpecs.menuUserId, SecuritySpecs.editAction],
+  // })
   @patch('/user')
   @response(200, {
     description: 'User PATCH success count',
@@ -147,10 +145,10 @@ export class UserControllerController {
     return this.userRepository.updateAll(user, where);
   }
 
-  @authenticate({
-    strategy: 'auth',
-    options: [SecuritySpecs.menuUserId, SecuritySpecs.listAction],
-  })
+  // @authenticate({
+  //   strategy: 'auth',
+  //   options: [SecuritySpecs.menuUserId, SecuritySpecs.listAction],
+  // })
   @get('/user/{id}')
   @response(200, {
     description: 'User model instance',
@@ -167,10 +165,10 @@ export class UserControllerController {
     return this.userRepository.findById(id, filter);
   }
 
-  @authenticate({
-    strategy: 'auth',
-    options: [SecuritySpecs.menuUserId, SecuritySpecs.editAction],
-  })
+  // @authenticate({
+  //   strategy: 'auth',
+  //   options: [SecuritySpecs.menuUserId, SecuritySpecs.editAction],
+  // })
   @patch('/user/{id}')
   @response(204, {
     description: 'User PATCH success',
@@ -189,10 +187,10 @@ export class UserControllerController {
     await this.userRepository.updateById(id, user);
   }
 
-  @authenticate({
-    strategy: 'auth',
-    options: [SecuritySpecs.menuUserId, SecuritySpecs.editAction],
-  })
+  // @authenticate({
+  //   strategy: 'auth',
+  //   options: [SecuritySpecs.menuUserId, SecuritySpecs.editAction],
+  // })
   @put('/user/{id}')
   @response(204, {
     description: 'User PUT success',
@@ -204,10 +202,10 @@ export class UserControllerController {
     await this.userRepository.replaceById(id, user);
   }
 
-  @authenticate({
-    strategy: 'auth',
-    options: [SecuritySpecs.menuUserId, SecuritySpecs.deleteAction],
-  })
+  // @authenticate({
+  //   strategy: 'auth',
+  //   options: [SecuritySpecs.menuUserId, SecuritySpecs.deleteAction],
+  // })
   @del('/user/{id}')
   @response(204, {
     description: 'User DELETE success',
