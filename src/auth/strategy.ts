@@ -5,11 +5,9 @@ import {
   AuthenticationStrategy,
 } from '@loopback/authentication';
 import {inject, service} from '@loopback/core';
-import {repository} from '@loopback/repository';
 import {HttpErrors, Request} from '@loopback/rest';
 import {UserProfile} from '@loopback/security';
 import parseBearerToken from 'parse-bearer-token';
-import {RoleMenuRepository} from '../repositories';
 import {AuthService, SecurityUserService} from '../services';
 
 export class AuthStrategy implements AuthenticationStrategy {
@@ -20,8 +18,6 @@ export class AuthStrategy implements AuthenticationStrategy {
     private serviceSecurity: SecurityUserService,
     @inject(AuthenticationBindings.METADATA)
     private metadata: AuthenticationMetadata[],
-    @repository(RoleMenuRepository)
-    private repositoryRoleMenu: RoleMenuRepository,
     @service(AuthService)
     private serviceAuth: AuthService,
   ) {}
@@ -38,8 +34,6 @@ export class AuthStrategy implements AuthenticationStrategy {
       let idRol = this.serviceSecurity.getRolFromToken(token);
       let idMenu: string = this.metadata[0].options![0];
       let action: string = this.metadata[0].options![1];
-      console.log(this.metadata);
-      console.log(idRol);
 
       try {
         let res = await this.serviceAuth.VerifyPermissionOfUserByRole(

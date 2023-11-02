@@ -82,9 +82,9 @@ export class UserController {
     //Send Email
     let data = {
       destinationEmail: user.email,
-      destinationName: `${user.firstName} ${user.firstLastname}`,
+      destinationName: `${user.name} ${user.lastname}`,
       emailSubject: ConfigNotifications.subjectPost,
-      emailContent: `Welcome ${user.firstName}, you now are part of the UrbanNav family, CONGRATULATIONS!!!`,
+      emailContent: `Welcome ${user.name}, you now are part of the UrbanNav family, CONGRATULATIONS!!!`,
     };
     let url = ConfigNotifications.urlEmail;
     this.serviceNotifications.SendNotification(data, url);
@@ -249,7 +249,7 @@ export class UserController {
       //Send notification using email or sms
       let data = {
         destinationEmail: user.email,
-        destinationName: `${user.firstName} ${user.firstLastname}`,
+        destinationName: `${user.name} ${user.lastname}`,
         emailSubject: ConfigNotifications.subject2fa,
         emailContent: `Your second factor authentication code is: ${code2fa} please don't share this code with anyone.`,
       };
@@ -289,7 +289,7 @@ export class UserController {
       //Send notification using email or sms
       let data = {
         destinationNumber: user.phoneNumber,
-        messageContent: `Hello ${user.firstName} ${user.firstLastname}, your new password is: ${newPassword} please don't share with anyone.`,
+        messageContent: `Hello ${user.name} ${user.lastname}, your new password is: ${newPassword} please don't share with anyone.`,
       };
       let url = ConfigNotifications.urlSMS;
       this.serviceNotifications.SendNotification(data, url);
@@ -363,7 +363,7 @@ export class UserController {
         // Send sms with started session
         let data = {
           destinationNumber: user.phoneNumber,
-          messageContent: `Hello ${user.firstName} ${user.firstLastname}, you have started a session in UrbanNav.`,
+          messageContent: `Hello ${user.name} ${user.lastname}, you have started a session in UrbanNav.`,
         };
         let url = ConfigNotifications.urlSMS;
         this.serviceNotifications.SendNotification(data, url);

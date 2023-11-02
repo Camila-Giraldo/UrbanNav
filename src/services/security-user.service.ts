@@ -83,7 +83,7 @@ export class SecurityUserService {
    */
   createToken(user: User): string {
     let data = {
-      name: `${user.firstName} ${user.secondName} ${user.firstLastname} ${user.secondLastname} `,
+      name: `${user.name} ${user.lastname}`,
       role: user.roleId,
       email: user.email,
     };

@@ -21,23 +21,13 @@ export class User extends Entity {
     type: 'string',
     required: true,
   })
-  firstName: string;
-
-  @property({
-    type: 'string',
-  })
-  secondName?: string;
+  name: string;
 
   @property({
     type: 'string',
     required: true,
   })
-  firstLastname: string;
-
-  @property({
-    type: 'string',
-  })
-  secondLastname?: string;
+  lastname: string;
 
   @property({
     type: 'string',
