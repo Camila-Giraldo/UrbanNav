@@ -54,10 +54,10 @@ export class UserController {
     public serviceNotifications: NotificationsService,
   ) {}
 
-  @authenticate({
+  /*@authenticate({
     strategy: 'auth',
     options: [SecuritySpecs.menuAdminId, SecuritySpecs.saveAction],
-  })
+  })*/
   @post('/user')
   @response(200, {
     description: 'User model instance',
@@ -76,7 +76,7 @@ export class UserController {
     })
     user: Omit<User, '_id'>,
   ): Promise<User> {
-    let password = this.securityService.createRandomText(10);
+    let password = user.password;
     let encryptedPassword = this.securityService.encryptText(password);
     user.password = encryptedPassword;
     //Send Email
@@ -84,7 +84,7 @@ export class UserController {
       destinationEmail: user.email,
       destinationName: `${user.name} ${user.lastname}`,
       emailSubject: ConfigNotifications.subjectPost,
-      emailContent: `Welcome ${user.name}, you now are part of the UrbanNav family, CONGRATULATIONS!!!`,
+      emailContent: `Welcome ${user.name}, you are now part of the UrbanNav family, CONGRATULATIONS!!!`,
     };
     let url = ConfigNotifications.urlEmail;
     this.serviceNotifications.SendNotification(data, url);

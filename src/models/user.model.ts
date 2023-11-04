@@ -43,8 +43,9 @@ export class User extends Entity {
 
   @property({
     type: 'string',
+    required: true,
   })
-  password?: string;
+  password: string;
 
   @belongsTo(() => Role)
   roleId: string;
