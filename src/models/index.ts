@@ -7,3 +7,4 @@ export * from './authentication-factor.model';
 export * from './credentials.model';
 export * from './permission-role-menu.model';
 export * from './credentials-get-password.model';
+export * from './pqrs.model';
