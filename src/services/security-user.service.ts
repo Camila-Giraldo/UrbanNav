@@ -1,7 +1,7 @@
 import {/* inject, */ BindingScope, injectable} from '@loopback/core';
 import {repository} from '@loopback/repository';
 import {SecuritySpecs} from '../config/security.config';
-import {AuthenticationFactor, Credentials, User} from '../models';
+import {AuthenticationFactor, Credentials, DataPqrs, User} from '../models';
 import {LoginRepository, UserRepository} from '../repositories';
 const generator = require('generate-password');
 const MD5 = require('crypto-js/md5');
@@ -98,5 +98,17 @@ export class SecurityUserService {
   getRolFromToken(tk: string): string {
     let obj = jwt.verify(tk, SecuritySpecs.keyJWT);
     return obj.role;
+  }
+
+  /**
+   * Valida que el usuario exista para el envío de pqrs
+   */
+  async validateUser(data: DataPqrs): Promise <User | null>{
+    let user = await this.repositoryUser.findOne({
+      where: {
+        email: data.email
+      }
+    });
+    return user;
   }
 }

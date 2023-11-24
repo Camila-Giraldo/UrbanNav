@@ -8,6 +8,8 @@ export namespace SecuritySpecs {
   export const menuMenuId = process.env.MENU_MENU_ID;
   export const menuMenuRoleId = process.env.MENU_MENU_ROLE_ID;
 
+  export const roleAdminId = process.env.ROLE_ADMIN_ID;
+
   export const listAction = 'list';
   export const saveAction = 'save';
   export const editAction = 'edit';

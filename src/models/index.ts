@@ -8,3 +8,4 @@ export * from './credentials.model';
 export * from './permission-role-menu.model';
 export * from './credentials-get-password.model';
 export * from './pqrs.model';
+export * from './data-pqrs.model';
