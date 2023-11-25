@@ -28,6 +28,7 @@ import {SecuritySpecs} from '../config/security.config';
 import {
   AuthenticationFactor,
   Credentials,
+  CredentialsChangePassword,
   CredentialsGetPassword,
   Login,
   PermissionRoleMenu,
@@ -378,4 +379,51 @@ export class UserController {
     }
     return new HttpErrors[401]('Código de 2FA inválido para el user');
   }
+
+  //change password
+  @post('/change-password')
+  @response(200, {
+    description: 'Change the user password',
+    content: {'application/json': {schema: getModelSchemaRef(User)}},
+  })
+  async changePassword(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(CredentialsChangePassword),
+        },
+      },
+    })
+    credentials: CredentialsChangePassword,
+  ): Promise<object> {
+    let user = await this.userRepository.findOne({
+      where: {
+        password: credentials.actualPassword,
+      },
+    });
+    if (user) {
+      let newPassword = credentials.newPassword;
+      let repeatNewPassword = credentials.repeatNewPassword;
+      if (newPassword === repeatNewPassword) {
+        let hiddenPassword = this.securityService.encryptText(newPassword);
+        user.password = hiddenPassword;
+        this.userRepository.updateById(user._id, user);
+        user.password = '';
+        //Send notification using email or sms
+        let data = {
+          destinationEmail: user.email,
+          destinationName: `${user.name} ${user.lastname}`,
+          emailSubject: ConfigNotifications.subjectPost,
+          emailContent: `Hello ${user.name} ${user.lastname}, your password has been changed successfully.`,
+        };
+        let url = ConfigNotifications.urlEmail;
+        this.serviceNotifications.SendNotification(data, url);
+        return user;
+      }else{
+        return new HttpErrors[401]('The passwords do not match');
+      }
+    }
+    return new HttpErrors[401]('It was not posible to change the password');
+  }
+
 }
