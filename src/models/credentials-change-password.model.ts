@@ -6,7 +6,7 @@ export class CredentialsChangePassword extends Model {
     type: 'string',
     required: true,
   })
-  actualPassword: string;
+  currentPassword: string;
 
   @property({
     type: 'string',

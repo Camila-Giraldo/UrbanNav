@@ -290,7 +290,7 @@ export class UserController {
       //Send notification using email or sms
       let data = {
         destinationNumber: user.phoneNumber,
-        messageContent: `Hello ${user.name} ${user.lastname}, your new password is: ${newPassword} please don't share with anyone.`,
+        messageContent: `Hello ${user.name} ${user.lastname}, your new password is: ${newPassword} please don't share with anyone. When start session please change your password.`,
       };
       let url = ConfigNotifications.urlSMS;
       this.serviceNotifications.SendNotification(data, url);
@@ -398,7 +398,7 @@ export class UserController {
   ): Promise<object> {
     let user = await this.userRepository.findOne({
       where: {
-        password: credentials.actualPassword,
+        password: credentials.currentPassword,
       },
     });
     if (user) {
