@@ -5,7 +5,7 @@ export namespace ConfigNotifications {
   export const subjectPqrs: string = 'New PQRS';
   export const subjectPqrsUser: string = 'Your PQRS has been created';
 
-  export const emailValidation: string = 'http://localhost:4200/hash-validation-public-user';
+  export const emailValidation: string = 'http://localhost:4200/security/hash-validation-public-user';
 
   export const urlEmail: string ='http://localhost:8081/Notifications/send-email';
   export const urlSMS: string = 'http://localhost:8081/Notifications/send-sms';

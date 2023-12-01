@@ -10,3 +10,4 @@ export * from './credentials-get-password.model';
 export * from './pqrs.model';
 export * from './data-pqrs.model';
 export * from './credentials-change-password.model';
+export * from './validation-hash-user.model';

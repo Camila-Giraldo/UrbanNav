@@ -33,6 +33,7 @@ import {
   Login,
   PermissionRoleMenu,
   User,
+  ValidationHashUser,
 } from '../models';
 import {LoginRepository, UserRepository} from '../repositories';
 import {
@@ -137,6 +138,34 @@ export class UserController {
     let url = ConfigNotifications.urlEmail;
     this.serviceNotifications.SendNotification(data, url);
     return this.userRepository.create(user);
+  }
+
+  @post('/validate-hash-user')
+  @response(200, {
+    description: 'Validate hash user',
+  })
+  async validateHashUser(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(ValidationHashUser, {}),
+        },
+      },
+    })
+    hash: ValidationHashUser,
+  ): Promise<boolean> {
+    let user = await this.userRepository.findOne({
+      where: {
+        validationHash: hash.hashCode,
+        validationStatus: false,
+      }
+    });
+    if (user) {
+      user.validationStatus = true;
+      this.userRepository.updateById(user._id, user);
+      return true;
+    }
+    return false;
   }
 
   @authenticate({
