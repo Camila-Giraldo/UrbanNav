@@ -47,6 +47,21 @@ export class User extends Entity {
   })
   password: string;
 
+  @property({
+    type: 'string',
+  })
+  validationHash?: string;
+
+  @property({
+    type: 'boolean',
+  })
+  validationStatus?: boolean;
+
+  @property({
+    type: 'boolean',
+  })
+  accepted?: boolean;
+
   @belongsTo(() => Role)
   roleId: string;
 

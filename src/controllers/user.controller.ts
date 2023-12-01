@@ -92,6 +92,45 @@ export class UserController {
     return this.userRepository.create(user);
   }
 
+  @post('/public-user')
+  @response(200, {
+    description: 'User model instance',
+    content: {'application/json': {schema: getModelSchemaRef(User)}},
+  })
+  async createPublicUser(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: getModelSchemaRef(User, {
+            title: 'NewUser',
+            exclude: ['_id'],
+          }),
+        },
+      },
+    })
+    user: Omit<User, '_id'>,
+  ): Promise<User> {
+    let password = user.password;
+    let encryptedPassword = this.securityService.encryptText(password);
+    user.password = encryptedPassword;
+    //hash validation
+    let hash = this.securityService.createRandomText(100);
+    user.validationHash = hash;
+    user.validationStatus = false;
+    user.accepted = false;
+    //Send Email hash validation
+    let link = `<a href="${ConfigNotifications.emailValidation}/${hash}" target='_blank'>Validate</a>`	;
+    let data = {
+      destinationEmail: user.email,
+      destinationName: `${user.name} ${user.lastname}`,
+      emailSubject: ConfigNotifications.subjectPost,
+      emailContent: `Hello ${user.name}, please visit this link for validate your account: ${link}`,
+    };
+    let url = ConfigNotifications.urlEmail;
+    this.serviceNotifications.SendNotification(data, url);
+    return this.userRepository.create(user);
+  }
+
   @authenticate({
     strategy: 'auth',
     options: [SecuritySpecs.menuAdminId, SecuritySpecs.listAction],
