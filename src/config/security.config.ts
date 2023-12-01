@@ -9,6 +9,9 @@ export namespace SecuritySpecs {
   export const menuMenuRoleId = process.env.MENU_MENU_ROLE_ID;
 
   export const roleAdminId = process.env.ROLE_ADMIN_ID;
+  export const roleDriverId = process.env.ROLE_DRIVER_ID;
+  export const rolePassengerId = process.env.ROLE_PASSENGER_ID;
+
 
   export const listAction = 'list';
   export const saveAction = 'save';

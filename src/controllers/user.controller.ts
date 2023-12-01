@@ -113,6 +113,14 @@ export class UserController {
     let password = user.password;
     let encryptedPassword = this.securityService.encryptText(password);
     user.password = encryptedPassword;
+
+    //role validation
+    let role = user.roleId;
+    if (role === 'driver') {
+      user.roleId = SecuritySpecs.roleDriverId!;
+    } else {
+      user.roleId = SecuritySpecs.rolePassengerId!;
+    }
     //hash validation
     let hash = this.securityService.createRandomText(100);
     user.validationHash = hash;
@@ -123,7 +131,7 @@ export class UserController {
     let data = {
       destinationEmail: user.email,
       destinationName: `${user.name} ${user.lastname}`,
-      emailSubject: ConfigNotifications.subjectPost,
+      emailSubject: ConfigNotifications.subjectValidation,
       emailContent: `Hello ${user.name}, please visit this link for validate your account: ${link}`,
     };
     let url = ConfigNotifications.urlEmail;
