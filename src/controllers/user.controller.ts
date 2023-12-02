@@ -81,6 +81,7 @@ export class UserController {
     let password = user.password;
     let encryptedPassword = this.securityService.encryptText(password);
     user.password = encryptedPassword;
+    user.validationStatus = true;
     //Send Email
     let data = {
       destinationEmail: user.email,
