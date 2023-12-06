@@ -420,7 +420,8 @@ export class UserController {
   ): Promise<object> {
     const user = await this.securityService.verifyCode2fa(credentials);
     if (user) {
-      const token = this.securityService.createToken(user);
+      let token = this.securityService.createToken(user);
+      let menu = [];
       if (user) {
         user.password = '';
         try {
@@ -436,9 +437,11 @@ export class UserController {
           );
         } catch {
           console.log(
-            'No se ha almacenado el cambio del estado de token en la base de data',
+            'No se ha almacenado el cambio del estado de token en la base de datos',
           );
         }
+        
+        menu = await this.securityService.getPermissionsFromMenuByUser(user.roleId!);
 
         // Send sms with started session
         let data = {
@@ -451,6 +454,7 @@ export class UserController {
         return {
           user: user,
           token: token,
+          menu: menu,
         };
       }
     }

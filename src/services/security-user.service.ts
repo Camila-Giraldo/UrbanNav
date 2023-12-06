@@ -1,8 +1,8 @@
 import {/* inject, */ BindingScope, injectable} from '@loopback/core';
 import {repository} from '@loopback/repository';
 import {SecuritySpecs} from '../config/security.config';
-import {AuthenticationFactor, Credentials, DataPqrs, User} from '../models';
-import {LoginRepository, UserRepository} from '../repositories';
+import {AuthenticationFactor, Credentials, DataPqrs, RoleMenu, User} from '../models';
+import {LoginRepository, RoleMenuRepository, UserRepository} from '../repositories';
 const generator = require('generate-password');
 const MD5 = require('crypto-js/md5');
 const jwt = require('jsonwebtoken');
@@ -14,6 +14,8 @@ export class SecurityUserService {
     public repositoryUser: UserRepository,
     @repository(LoginRepository)
     public repositoryLogin: LoginRepository,
+    @repository(RoleMenuRepository)
+    private repositoryRoleMenu: RoleMenuRepository,
   ) {}
 
   /**
@@ -111,5 +113,19 @@ export class SecurityUserService {
       }
     });
     return user;
+  }
+
+  /**
+   * rerurns the permissions of a menu for a user
+   * @param idRole id role to search
+   */
+  async getPermissionsFromMenuByUser(idRole:string): Promise<RoleMenu[]>{
+    let menu: RoleMenu[] = await this.repositoryRoleMenu.find({
+      where:{
+        list:true,
+        roleId:idRole
+      }
+    });
+    return menu;
   }
 }
