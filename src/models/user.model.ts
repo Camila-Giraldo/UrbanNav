@@ -50,6 +50,40 @@ export class User extends Entity {
   @property({
     type: 'string',
   })
+  photo?: string;
+
+  @property({
+    type: 'string',
+    required: true,
+  })
+  gender: string;
+
+  // Driver's properties
+  @property({
+    type: 'string',
+  })
+  drivingLicense?: string;
+
+  @property({
+    type: 'boolean',
+  })
+  status?: boolean;
+
+  @property({
+    type: 'number',
+  })
+  carId?: number;
+
+  // Passenger's properties
+  @property({
+    type: 'string',
+  })
+  emergencyContact?: string;
+
+  // Hash validations
+  @property({
+    type: 'string',
+  })
   validationHash?: string;
 
   @property({

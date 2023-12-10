@@ -12,6 +12,7 @@ export namespace SecuritySpecs {
   export const roleDriverId = process.env.ROLE_DRIVER_ID;
   export const rolePassengerId = process.env.ROLE_PASSENGER_ID;
 
+  export const urlPost: string = 'http://localhost:3001/';
 
   export const listAction = 'list';
   export const saveAction = 'save';

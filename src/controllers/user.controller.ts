@@ -112,24 +112,36 @@ export class UserController {
     })
     user: Omit<User, '_id'>,
   ): Promise<User> {
+    let dataUser: any = {};
+    let role: string = 'Passenger';
     let password = user.password;
     let encryptedPassword = this.securityService.encryptText(password);
     user.password = encryptedPassword;
 
-    //role validation
-    let role = user.roleId;
-    if (role === 'driver') {
-      user.roleId = SecuritySpecs.roleDriverId!;
-    } else {
+    if (role === 'passenger') {
+      role = 'passenger';
       user.roleId = SecuritySpecs.rolePassengerId!;
+    } else {
+      role = 'driver';
+      user.roleId = SecuritySpecs.roleDriverId!;
     }
+
+    // //role validation
+    // let role = user.roleId;
+    // if (role === 'driver') {
+    //   user.roleId = SecuritySpecs.roleDriverId!;
+    // } else {
+    //   user.roleId = SecuritySpecs.rolePassengerId!;
+    // }
+
     //hash validation
     let hash = this.securityService.createRandomText(100);
     user.validationHash = hash;
     user.validationStatus = false;
     user.accepted = false;
+
     //Send Email hash validation
-    let link = `<a href="${ConfigNotifications.emailValidation}/${hash}" target='_blank'>Validate</a>`	;
+    let link = `<a href="${ConfigNotifications.emailValidation}/${hash}" target='_blank'>Validate</a>`;
     let data = {
       destinationEmail: user.email,
       destinationName: `${user.name} ${user.lastname}`,
@@ -138,7 +150,45 @@ export class UserController {
     };
     let url = ConfigNotifications.urlEmail;
     this.serviceNotifications.SendNotification(data, url);
-    return this.userRepository.create(user);
+
+    const newUser = await this.userRepository.create(user);
+
+    const urlPost = SecuritySpecs.urlPost;
+
+    if (user.roleId === SecuritySpecs.roleDriverId) {
+      urlPost.concat('driver');
+      dataUser = {
+        idDriver: `${newUser._id}`,
+        name: user.name,
+        lastName: user.lastname,
+        phoneNumber: user.phoneNumber,
+        email: user.email,
+        password: user.password,
+        photo: user.photo,
+        gender: user.gender,
+        drivingLicense: user.drivingLicense,
+        status: user.status,
+        carId: user.carId,
+      };
+    } else if (user.roleId === SecuritySpecs.rolePassengerId) {
+      urlPost.concat('passenger');
+      dataUser = {
+        idPassenger: `${newUser._id}`,
+        name: user.name,
+        lastName: user.lastname,
+        phoneNumber: user.phoneNumber,
+        email: user.email,
+        password: user.password,
+        photo: user.photo,
+        gender: user.gender,
+        emergencyContact: user.emergencyContact,
+      };
+    }
+
+    //Send to business microservice
+    await this.securityService.dataUser(dataUser, urlPost);
+
+    return newUser;
   }
 
   @post('/validate-hash-user')
@@ -159,7 +209,7 @@ export class UserController {
       where: {
         validationHash: hash.hashCode,
         validationStatus: false,
-      }
+      },
     });
     if (user) {
       user.validationStatus = true;
@@ -440,8 +490,10 @@ export class UserController {
             'No se ha almacenado el cambio del estado de token en la base de datos',
           );
         }
-        
-        menu = await this.securityService.getPermissionsFromMenuByUser(user.roleId!);
+
+        menu = await this.securityService.getPermissionsFromMenuByUser(
+          user.roleId!,
+        );
 
         // Send sms with started session
         let data = {
@@ -500,11 +552,10 @@ export class UserController {
         let url = ConfigNotifications.urlEmail;
         this.serviceNotifications.SendNotification(data, url);
         return user;
-      }else{
+      } else {
         return new HttpErrors[401]('The passwords do not match');
       }
     }
     return new HttpErrors[401]('It was not posible to change the password');
   }
-
 }

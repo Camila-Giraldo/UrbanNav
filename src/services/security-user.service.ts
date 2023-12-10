@@ -1,11 +1,25 @@
 import {/* inject, */ BindingScope, injectable} from '@loopback/core';
 import {repository} from '@loopback/repository';
 import {SecuritySpecs} from '../config/security.config';
-import {AuthenticationFactor, Credentials, DataPqrs, RoleMenu, User} from '../models';
-import {LoginRepository, RoleMenuRepository, UserRepository} from '../repositories';
+import {
+  AuthenticationFactor,
+  Credentials,
+  DataPqrs,
+  RoleMenu,
+  User,
+} from '../models';
+import {
+  LoginRepository,
+  RoleMenuRepository,
+  UserRepository,
+} from '../repositories';
 const generator = require('generate-password');
 const MD5 = require('crypto-js/md5');
 const jwt = require('jsonwebtoken');
+
+const fetch = require('node-fetch');
+
+const FormData = require('form-data');
 
 @injectable({scope: BindingScope.TRANSIENT})
 export class SecurityUserService {
@@ -106,11 +120,11 @@ export class SecurityUserService {
   /**
    * Valida que el usuario exista para el envío de pqrs
    */
-  async validateUser(data: DataPqrs): Promise <User | null>{
+  async validateUser(data: DataPqrs): Promise<User | null> {
     let user = await this.repositoryUser.findOne({
       where: {
-        email: data.email
-      }
+        email: data.email,
+      },
     });
     return user;
   }
@@ -119,13 +133,48 @@ export class SecurityUserService {
    * rerurns the permissions of a menu for a user
    * @param idRole id role to search
    */
-  async getPermissionsFromMenuByUser(idRole:string): Promise<RoleMenu[]>{
+  async getPermissionsFromMenuByUser(idRole: string): Promise<RoleMenu[]> {
     let menu: RoleMenu[] = await this.repositoryRoleMenu.find({
-      where:{
-        list:true,
-        roleId:idRole
-      }
+      where: {
+        list: true,
+        roleId: idRole,
+      },
     });
     return menu;
   }
+
+  /**
+   * Create a user in the security microservice and send to the business microservice
+   * @param data user data to create
+   * @param url url to send the request
+   * @returns the response of the request
+   */
+
+  async dataUser(data: any, url: string): Promise<any> {
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {'Content-Type': 'application/json'},
+      });
+
+      if (!response.ok) {
+        // If the response is not OK, throw an error
+        throw new Error(
+          `Error trying the request: ${response.status} ${response.statusText}`,
+        );
+      }
+      const jsonResponse = await response.json();
+      console.log('User created in the business logic microservice');
+      return jsonResponse; // Return the response data
+    } catch (error) {
+      console.error(
+        'Error trying to create the user in the business logic microservice',
+        error.message,
+      );
+      throw error;
+    }
+  }
+
+  // Create a user in the security microservice and send to the business microservice with MySQL database
 }
