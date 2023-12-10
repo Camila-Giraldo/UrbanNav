@@ -113,26 +113,17 @@ export class UserController {
     user: Omit<User, '_id'>,
   ): Promise<User> {
     let dataUser: any = {};
-    let role: string = 'Passenger';
     let password = user.password;
     let encryptedPassword = this.securityService.encryptText(password);
     user.password = encryptedPassword;
 
-    if (role === 'passenger') {
-      role = 'passenger';
-      user.roleId = SecuritySpecs.rolePassengerId!;
-    } else {
-      role = 'driver';
+    //role validation
+    let role = user.roleId;
+    if (role === 'driver') {
       user.roleId = SecuritySpecs.roleDriverId!;
+    } else {
+      user.roleId = SecuritySpecs.rolePassengerId!;
     }
-
-    // //role validation
-    // let role = user.roleId;
-    // if (role === 'driver') {
-    //   user.roleId = SecuritySpecs.roleDriverId!;
-    // } else {
-    //   user.roleId = SecuritySpecs.rolePassengerId!;
-    // }
 
     //hash validation
     let hash = this.securityService.createRandomText(100);
@@ -151,12 +142,17 @@ export class UserController {
     let url = ConfigNotifications.urlEmail;
     this.serviceNotifications.SendNotification(data, url);
 
+    // Crea el usuario en mongo, retorna todo el usuario creado
     const newUser = await this.userRepository.create(user);
 
+    // URL para enviar los datos al microservicio de negocio
     const urlPost = SecuritySpecs.urlPost;
 
+    // Si el rolId pertenece a un conductor
     if (user.roleId === SecuritySpecs.roleDriverId) {
+      // Se añade a la url el endpoint para conductor del microservicio de lógica de negocio
       urlPost.concat('driver');
+      // Se obtienen los datos necesarios del conductor, estos datos deben ir en el orden que mysql tiene
       dataUser = {
         idDriver: `${newUser._id}`,
         name: user.name,
@@ -170,8 +166,11 @@ export class UserController {
         status: user.status,
         carId: user.carId,
       };
+      // Si el roleId pertenece a un pasajero
     } else if (user.roleId === SecuritySpecs.rolePassengerId) {
+      // Se añade a la url el endpoint para pasajero del microservicio de lógica de negocio
       urlPost.concat('passenger');
+      // Se obtienen los datos necesarios del pasajero
       dataUser = {
         idPassenger: `${newUser._id}`,
         name: user.name,
@@ -185,9 +184,10 @@ export class UserController {
       };
     }
 
-    //Send to business microservice
+    // Send to business microservice
     await this.securityService.dataUser(dataUser, urlPost);
 
+    // Retorna el usuario creado
     return newUser;
   }
 
