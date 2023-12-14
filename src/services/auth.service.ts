@@ -22,7 +22,6 @@ export class AuthService {
         menuId: idMenu,
       },
     });
-    console.log(permission);
 
     let next: boolean = false;
     if (permission) {

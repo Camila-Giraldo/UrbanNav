@@ -119,35 +119,11 @@ export class UserController {
     user.password = encryptedPassword;
 
     //role validation
-    let role = user.roleId;
+    let role = 'driver';
     if (role === 'driver') {
       user.roleId = SecuritySpecs.roleDriverId!;
-      urlPost.concat('driver');
-      dataUser = {
-        name: user.name,
-        lastName: user.lastname,
-        phoneNumber: user.phoneNumber,
-        email: user.email,
-        password: user.password,
-        photo: user.photo,
-        gender: user.gender,
-        drivingLicense: user.drivingLicense,
-        status: user.status,
-        carId: user.carId,
-      };
     } else {
       user.roleId = SecuritySpecs.rolePassengerId!;
-      urlPost.concat('passenger');
-      dataUser = {
-        name: user.name,
-        lastName: user.lastname,
-        phoneNumber: user.phoneNumber,
-        email: user.email,
-        password: user.password,
-        photo: user.photo,
-        gender: user.gender,
-        emergencyContact: user.emergencyContact,
-      };
     }
 
     //hash validation
@@ -170,9 +146,33 @@ export class UserController {
     const newUser = await this.userRepository.create(user);
 
     if (user.roleId === SecuritySpecs.roleDriverId) {
-      dataUser.idDriver = newUser._id;
+      urlPost = urlPost + 'driver';
+      dataUser = {
+        idDriver: `${newUser._id}`,
+        name: user.name,
+        lastName: user.lastname,
+        phoneNumber: user.phoneNumber,
+        email: user.email,
+        password: user.password,
+        photo: user.photo,
+        gender: user.gender,
+        drivingLicense: user.drivingLicense,
+        status: user.status,
+        carId: user.carId,
+      };
     } else if (user.roleId === SecuritySpecs.rolePassengerId) {
-      dataUser.idPassenger = newUser._id;
+      urlPost = urlPost + 'passenger';
+      dataUser = {
+        idPassenger: `${newUser._id}`,
+        name: user.name,
+        lastName: user.lastname,
+        phoneNumber: user.phoneNumber,
+        email: user.email,
+        password: user.password,
+        photo: user.photo,
+        gender: user.gender,
+        emergencyContact: user.emergencyContact,
+      };
     }
 
     // Send to business microservice
