@@ -146,13 +146,12 @@ export class UserController {
     const newUser = await this.userRepository.create(user);
 
     if (user.roleId === SecuritySpecs.roleDriverId) {
-      urlPost = urlPost + 'driver';
       dataUser = {
-        idDriver: `${newUser._id}`,
+        id: `${newUser._id}`,
         name: user.name,
-        lastName: user.lastname,
-        phoneNumber: user.phoneNumber,
+        lastname: user.lastname,
         email: user.email,
+        phoneNumber: user.phoneNumber,
         password: user.password,
         photo: user.photo,
         gender: user.gender,
@@ -160,20 +159,21 @@ export class UserController {
         status: user.status,
         carId: user.carId,
       };
-    } else if (user.roleId === SecuritySpecs.rolePassengerId) {
-      urlPost = urlPost + 'passenger';
+    } else {
       dataUser = {
-        idPassenger: `${newUser._id}`,
+        id: `${newUser._id}`,
         name: user.name,
-        lastName: user.lastname,
-        phoneNumber: user.phoneNumber,
+        lastname: user.lastname,
         email: user.email,
+        phoneNumber: user.phoneNumber,
         password: user.password,
         photo: user.photo,
         gender: user.gender,
         emergencyContact: user.emergencyContact,
       };
     }
+
+    console.log(dataUser);
 
     // Send to business microservice
     await this.securityService.dataUser(dataUser, urlPost);
